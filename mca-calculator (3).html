@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="MCA Calc"/>
+<title>MCA Calculator</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html { height: 100%; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #eef2f7;
+    min-height: 100%;
+    padding: max(52px, env(safe-area-inset-top, 52px)) 16px max(20px, env(safe-area-inset-bottom, 20px));
+    color: #1e293b;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+  h1 { font-size: 32px; font-weight: 800; text-align: center; margin-bottom: 6px; }
+  .subtitle { text-align: center; color: #64748b; font-size: 15px; margin-bottom: 32px; }
+
+  .layout { display: flex; gap: 20px; max-width: 1400px; margin: 0 auto; align-items: flex-start; flex-wrap: wrap; }
+  .left-col { flex: 1 1 600px; min-width: 320px; }
+  .right-col { flex: 0 0 300px; min-width: 280px; background: white; border-radius: 12px; padding: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+
+  /* Cards */
+  .card { background: white; border-radius: 12px; padding: 24px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+  .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .card-title { font-weight: 600; font-size: 15px; }
+
+  .card-body { display: flex; gap: 32px; flex-wrap: wrap; }
+  .inputs-col { flex: 1 1 260px; min-width: 240px; }
+  .overview-col { flex: 1 1 340px; min-width: 300px; }
+
+  /* Funding Amount */
+  .amount-field { margin-bottom: 16px; }
+  .field-label { font-weight: 500; font-size: 14px; display: block; margin-bottom: 6px; }
+  .amount-box {
+    display: flex; align-items: center;
+    border: 1px solid #dde3ec; border-radius: 8px;
+    background: #eef2f7; padding: 10px 14px; gap: 6px;
+  }
+  .amount-prefix { color: #64748b; font-size: 14px; user-select: none; }
+  .amount-input {
+    border: none; outline: none; background: transparent;
+    font-size: 14px; width: 100%; font-family: inherit; color: #1e293b;
+  }
+
+  /* Adjust buttons */
+  .adj-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 8px; }
+  .btn-green {
+    padding: 8px 4px; border-radius: 8px; border: none;
+    background: #dcfce7; color: #16a34a; font-weight: 600;
+    font-size: 13px; cursor: pointer; font-family: inherit;
+  }
+  .btn-green:hover { background: #bbf7d0; }
+  .btn-red {
+    padding: 8px 4px; border-radius: 8px; border: none;
+    background: #fee2e2; color: #dc2626; font-weight: 600;
+    font-size: 13px; cursor: pointer; font-family: inherit;
+  }
+  .btn-red:hover { background: #fecaca; }
+
+  /* Factor & Term row */
+  .factor-term-row { display: flex; gap: 24px; margin-top: 4px; }
+  .factor-box { flex: 1; }
+  .term-box { flex: 2; }
+  .spinner {
+    display: flex; align-items: center; gap: 8px;
+    border: 1px solid #e2e8f0; border-radius: 8px; padding: 6px 10px;
+  }
+  .spin-btn {
+    background: none; border: none; cursor: pointer;
+    font-weight: 700; font-size: 16px; color: #374151; padding: 0 2px; line-height: 1;
+    font-family: inherit;
+  }
+  .spin-val { flex: 1; text-align: center; font-size: 14px; }
+  .term-select {
+    border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 10px;
+    font-size: 14px; background: white; cursor: pointer; font-family: inherit; outline: none;
+  }
+  .term-row { display: flex; gap: 6px; align-items: center; }
+
+  /* Repayment Overview */
+  .overview-title { font-weight: 600; font-size: 15px; margin-bottom: 14px; }
+  .cell-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+  .cell {
+    background: #f8fafc; border: 1px solid #e2e8f0;
+    border-radius: 8px; padding: 14px 8px; text-align: center;
+  }
+  .cell.highlight { background: #fef9c3; border: 1.5px solid #fde047; }
+  .cell-label { font-size: 12px; color: #94a3b8; margin-bottom: 6px; }
+  .cell-value { font-weight: 700; font-size: 16px; color: #1e293b; }
+  .cell-value.green { color: #16a34a; }
+  .cell-value.red { color: #dc2626; }
+
+  /* Delete btn */
+  .btn-delete {
+    background: none; border: 1px solid #e2e8f0; cursor: pointer;
+    color: #94a3b8; font-size: 13px; padding: 5px 8px;
+    border-radius: 6px; line-height: 1;
+  }
+  .btn-delete:hover { background: #fef2f2; color: #ef4444; border-color: #fecaca; }
+
+  /* Add Option */
+  .btn-add-option {
+    width: 100%; padding: 14px; background: white;
+    border: 1.5px dashed #cbd5e1; border-radius: 12px; cursor: pointer;
+    font-size: 14px; color: #64748b; font-weight: 500; font-family: inherit;
+  }
+  .btn-add-option:hover { background: #f8fafc; }
+
+  /* Quick Paste */
+  .paste-textarea {
+    width: 100%; border: 1px solid #e2e8f0; border-radius: 8px;
+    padding: 10px 12px; font-size: 13px; font-family: inherit;
+    resize: vertical; outline: none; color: #1e293b; line-height: 1.5;
+    background: #f8fafc; min-height: 80px;
+  }
+  .paste-textarea.error { border-color: #fca5a5; }
+  .parse-error { color: #ef4444; font-size: 12px; margin-top: 4px; }
+  .parsed-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .parsed-count { font-size: 12px; color: #64748b; }
+  .btn-select-all {
+    background: none; border: 1px solid #e2e8f0; border-radius: 6px;
+    padding: 3px 10px; font-size: 12px; cursor: pointer; color: #374151; font-family: inherit;
+  }
+  .parsed-item {
+    border: 1.5px solid #e2e8f0; border-radius: 8px; padding: 10px 14px;
+    margin-bottom: 6px; cursor: pointer; background: #fafafa; transition: all 0.15s;
+  }
+  .parsed-item.selected { border-color: #0ea5e9; background: #f0f9ff; border-width: 2px; }
+  .parsed-item-row { display: flex; align-items: flex-start; gap: 10px; }
+  .checkbox {
+    width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; margin-top: 1px;
+    border: 2px solid #cbd5e1; background: white;
+    display: flex; align-items: center; justify-content: center; font-size: 11px; color: white;
+  }
+  .checkbox.checked { border-color: #0ea5e9; background: #0ea5e9; }
+  .parsed-info { flex: 1; }
+  .parsed-main { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 4px; font-size: 13px; }
+  .parsed-label { font-weight: 700; color: #0f172a; }
+  .parsed-amt { color: #334155; }
+  .parsed-rate { color: #64748b; font-size: 12px; }
+  .parsed-payback { color: #475569; font-size: 12px; }
+  .parsed-cost { color: #94a3b8; font-size: 11px; }
+  .badges { display: flex; gap: 4px; flex-wrap: wrap; }
+  .badge { font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 20px; }
+  .btn-add-parsed {
+    padding: 9px 20px; background: #0ea5e9; color: white;
+    border: none; border-radius: 8px; cursor: pointer;
+    font-size: 13px; font-weight: 600; font-family: inherit; margin-top: 10px;
+  }
+  .btn-add-parsed:disabled { background: #cbd5e1; cursor: not-allowed; }
+
+  /* Summary panel */
+  .summary-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .summary-sub { color: #64748b; font-size: 13px; margin-bottom: 16px; }
+  .fields-label { font-size: 13px; font-weight: 500; margin-bottom: 8px; color: #374151; }
+  .fields-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 8px; margin-bottom: 14px; }
+  .fields-grid label { display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; }
+  .fields-grid input[type=checkbox] { accent-color: #3b82f6; width: 14px; height: 14px; }
+  .btn-copy-all {
+    width: 100%; padding: 10px; background: white; border: 1px solid #e2e8f0;
+    border-radius: 8px; cursor: pointer; font-size: 13px; color: #374151;
+    font-weight: 500; font-family: inherit; display: flex; align-items: center;
+    justify-content: center; gap: 6px;
+  }
+  .btn-copy-all:hover { background: #f8fafc; }
+  .btn-copy-all.copied { background: #dcfce7; border-color: #bbf7d0; color: #15803d; }
+
+  .summary-cards { margin-top: 14px; margin-bottom: 8px; }
+  .summary-card { background: #f8fafc; border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; }
+  .summary-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+  .summary-card-title { font-size: 14px; font-weight: 700; }
+  .btn-copy-one {
+    background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 6px;
+    cursor: pointer; color: #374151; font-size: 11px; font-weight: 500;
+    padding: 4px 9px; font-family: inherit; display: flex; align-items: center; gap: 3px;
+    white-space: nowrap;
+  }
+  .btn-copy-one:hover { background: #e2e8f0; }
+  .btn-copy-one.copied { background: #dcfce7; border-color: #bbf7d0; color: #15803d; }
+  .summary-text { font-size: 13px; color: #374151; line-height: 1.7; white-space: pre-line; }
+
+  code { background: #f1f5f9; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+</style>
+</head>
+<body>
+
+<h1>MCA Calculator</h1>
+<p class="subtitle">Compare repayments and generate summaries for your funding options.</p>
+
+<div class="layout">
+  <div class="left-col">
+    <!-- Quick Paste -->
+    <div class="card" id="quick-paste-card">
+      <div style="font-weight:600;font-size:15px;margin-bottom:4px;">⚡ Quick Paste</div>
+      <div style="font-size:13px;color:#64748b;margin-bottom:12px;">
+        Paste one or multiple offers — e.g. <code>Kapitus 166k / 1.399 / 120 weeks</code>
+      </div>
+      <textarea class="paste-textarea" id="paste-input"
+        placeholder="Kapitus 166k / 1.399 / 120 weeks&#10;Aspire 75k / 1.499 / 32 weeks&#10;Rapid 86k / 1.499 / 60 weeks"
+      ></textarea>
+      <div class="parse-error" id="parse-error" style="display:none;"></div>
+      <div id="parsed-results" style="display:none; margin-top:12px;">
+        <div class="parsed-header">
+          <div class="parsed-count" id="parsed-count"></div>
+          <button class="btn-select-all" id="btn-select-all">Deselect All</button>
+        </div>
+        <div id="parsed-list"></div>
+        <button class="btn-add-parsed" id="btn-add-parsed">+ Add Options</button>
+      </div>
+    </div>
+
+    <!-- Options container -->
+    <div id="options-container"></div>
+
+    <button class="btn-add-option" id="btn-add-option">+ Add Funding Option</button>
+  </div>
+
+  <!-- Funding Summary -->
+  <div class="right-col">
+    <div class="summary-title">Funding Summary</div>
+    <div class="summary-sub">Copy and paste offers.</div>
+    <div class="fields-label">Displayed Fields</div>
+    <div class="fields-grid">
+      <label><input type="checkbox" id="field-fundingAmount" checked> Funding Amount</label>
+      <label><input type="checkbox" id="field-factorRate" checked> Factor Rate</label>
+      <label><input type="checkbox" id="field-termLength" checked> Term Length</label>
+      <label><input type="checkbox" id="field-payment" checked> Payment</label>
+      <label><input type="checkbox" id="field-paybackAmount" checked> Payback Amount</label>
+    </div>
+    <button class="btn-copy-all" id="btn-copy-all-top">📋 Copy All</button>
+    <div class="summary-cards" id="summary-cards"></div>
+    <button class="btn-copy-all" id="btn-copy-all-bottom">📋 Copy All</button>
+  </div>
+</div>
+
+<script>
+// ── State ────────────────────────────────────────────────
+let options = [{ id: 1, label: '', fundingAmount: 10000, factorRate: 1.49, termValue: 36, termType: 'Weeks' }];
+let nextId = 2;
+let parsedOffers = [];
+let selectedOffers = [];
+
+// ── Helpers ──────────────────────────────────────────────
+function termToDays(v, t) {
+  if (t === 'Days') return v;
+  if (t === 'Weeks') return v * 5;
+  if (t === 'Months') return v * 20;
+  return v;
+}
+function calc(fundingAmount, factorRate, termValue, termType) {
+  const paybackAmount = Math.round(fundingAmount * factorRate);
+  const days = termToDays(termValue, termType);
+  const weeks = Math.round(days / 5 * 10) / 10;
+  const months = Math.round(days / 20 * 10) / 10;
+  return {
+    paybackAmount, days, weeks, months,
+    dailyPayment:   days   > 0 ? Math.round(paybackAmount / days)   : 0,
+    weeklyPayment:  weeks  > 0 ? Math.round(paybackAmount / weeks)  : 0,
+    monthlyPayment: months > 0 ? Math.round(paybackAmount / months) : 0,
+  };
+}
+function fmt(n) { return '$' + Number(n).toLocaleString(); }
+
+function getDisplayedFields() {
+  return {
+    fundingAmount: document.getElementById('field-fundingAmount').checked,
+    factorRate:    document.getElementById('field-factorRate').checked,
+    termLength:    document.getElementById('field-termLength').checked,
+    payment:       document.getElementById('field-payment').checked,
+    paybackAmount: document.getElementById('field-paybackAmount').checked,
+  };
+}
+
+function getSingleOptionText(opt, index, fields) {
+  const c = calc(opt.fundingAmount, opt.factorRate, opt.termValue, opt.termType);
+  const pLabel = opt.termType === 'Days' ? 'Daily' : opt.termType === 'Weeks' ? 'Weekly' : 'Monthly';
+  const pAmt   = opt.termType === 'Days' ? c.dailyPayment : opt.termType === 'Weeks' ? c.weeklyPayment : c.monthlyPayment;
+  const title  = opt.label ? `Option ${index + 1} - ${opt.label}` : `Option ${index + 1}`;
+  const lines  = [title];
+  if (fields.fundingAmount) lines.push(`Funding Amount: ${fmt(opt.fundingAmount)}`);
+  if (fields.factorRate)    lines.push(`Factor Rate: ${opt.factorRate.toFixed(2)}`);
+  if (fields.termLength)    lines.push(`Term Length: ${opt.termValue} ${opt.termType.toLowerCase()}`);
+  if (fields.payment)       lines.push(`${pLabel} Payments: ${fmt(pAmt)}`);
+  if (fields.paybackAmount) lines.push(`Payback Amount: ${fmt(c.paybackAmount)}`);
+  return lines.join('\n');
+}
+
+function getAllSummaryText() {
+  const fields = getDisplayedFields();
+  return options.map((o, i) => getSingleOptionText(o, i, fields)).join('\n\n');
+}
+
+function copyText(text, btn, label = '📋 Copy') {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ Copied';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = label; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// ── Parse formula ─────────────────────────────────────────
+function parseFormula(line) {
+  const s = line.trim();
+  const m = s.match(/(\d[\d,.]*)([kKmM]?)\s*\/\s*([\d.]+)\s*\/\s*([\d.]+)\s*(days?|weeks?|months?)/i);
+  if (!m) return null;
+  let amt = parseFloat(m[1].replace(/,/g, ''));
+  const mul = m[2].toLowerCase();
+  if (mul === 'k') amt *= 1000;
+  if (mul === 'm') amt *= 1000000;
+  const factorRate = parseFloat(m[3]);
+  const termValue  = parseFloat(m[4]);
+  const termRaw    = m[5].toLowerCase();
+  let termType = 'Days';
+  if (termRaw.startsWith('week'))  termType = 'Weeks';
+  if (termRaw.startsWith('month')) termType = 'Months';
+  const lm = s.match(/^([a-zA-Z][a-zA-Z\s]*?)(?=\s*[\d])/);
+  const label = lm ? lm[1].trim() : '';
+  if (isNaN(amt) || isNaN(factorRate) || isNaN(termValue)) return null;
+  return { label, fundingAmount: amt, factorRate, termValue, termType };
+}
+
+function getBadges(p, all) {
+  const badges = [];
+  const days = termToDays(p.termValue, p.termType);
+  const allDays = all.map(x => termToDays(x.termValue, x.termType));
+  if (p.fundingAmount === Math.max(...all.map(x => x.fundingAmount)))
+    badges.push({ label: '💰 Highest Amount', color: '#1d4ed8', bg: '#dbeafe' });
+  if (p.factorRate === Math.min(...all.map(x => x.factorRate)))
+    badges.push({ label: '📉 Lowest Rate', color: '#15803d', bg: '#dcfce7' });
+  if (days === Math.max(...allDays))
+    badges.push({ label: '📅 Longest Term', color: '#7c3aed', bg: '#ede9fe' });
+  if (p.fundingAmount * p.factorRate === Math.min(...all.map(x => x.fundingAmount * x.factorRate)))
+    badges.push({ label: '✅ Lowest Payback', color: '#b45309', bg: '#fef3c7' });
+  if ((p.fundingAmount * p.factorRate - p.fundingAmount) === Math.min(...all.map(x => x.fundingAmount * x.factorRate - x.fundingAmount)))
+    badges.push({ label: '💡 Lowest Cost', color: '#0f766e', bg: '#ccfbf1' });
+  return badges;
+}
+
+// ── Render option card ────────────────────────────────────
+function renderOptionCard(opt, index) {
+  const c = calc(opt.fundingAmount, opt.factorRate, opt.termValue, opt.termType);
+  const hl = opt.termType === 'Days' ? 'days' : opt.termType === 'Weeks' ? 'weeks' : 'months';
+  const showDelete = options.length > 1;
+
+  function cell(label, value, colorClass, isHL) {
+    return `<div class="cell${isHL ? ' highlight' : ''}">
+      <div class="cell-label">${label}</div>
+      <div class="cell-value${colorClass ? ' ' + colorClass : ''}">${value}</div>
+    </div>`;
+  }
+
+  return `
+  <div class="card" id="option-card-${opt.id}">
+    <div class="card-header">
+      <span class="card-title">Option ${index + 1}${opt.label ? ' — ' + opt.label : ''}</span>
+      ${showDelete ? `<button class="btn-delete" onclick="deleteOption(${opt.id})">🗑</button>` : ''}
+    </div>
+    <div class="card-body">
+      <div class="inputs-col">
+        <div class="amount-field">
+          <label class="field-label">Funding Amount</label>
+          <div class="amount-box">
+            <span class="amount-prefix">$</span>
+            <input class="amount-input" type="text" id="amount-${opt.id}"
+              value="${Number(opt.fundingAmount).toLocaleString()}"
+              onfocus="this.value='${opt.fundingAmount}'; this.type='number';"
+              onblur="updateAmount(${opt.id}, this.value); this.type='text'; this.value=Number(this.value||0).toLocaleString();"
+              onchange="updateAmount(${opt.id}, this.value)">
+          </div>
+        </div>
+        <div class="adj-grid">
+          <button class="btn-green" onclick="adjustAmount(${opt.id}, 100)">+100</button>
+          <button class="btn-green" onclick="adjustAmount(${opt.id}, 1000)">+1k</button>
+          <button class="btn-green" onclick="adjustAmount(${opt.id}, 10000)">+10k</button>
+        </div>
+        <div class="adj-grid" style="margin-bottom:20px;">
+          <button class="btn-red" onclick="adjustAmount(${opt.id}, -100)">-100</button>
+          <button class="btn-red" onclick="adjustAmount(${opt.id}, -1000)">-1k</button>
+          <button class="btn-red" onclick="adjustAmount(${opt.id}, -10000)">-10k</button>
+        </div>
+        <div class="factor-term-row">
+          <div class="factor-box">
+            <label class="field-label">Factor Rate</label>
+            <div class="spinner">
+              <button class="spin-btn" onclick="adjustFactor(${opt.id}, -0.01)">−</button>
+              <span class="spin-val" id="factor-val-${opt.id}">${opt.factorRate.toFixed(2)}</span>
+              <button class="spin-btn" onclick="adjustFactor(${opt.id}, 0.01)">+</button>
+            </div>
+          </div>
+          <div class="term-box">
+            <label class="field-label">Term</label>
+            <div class="term-row">
+              <select class="term-select" id="term-type-${opt.id}" onchange="updateTermType(${opt.id}, this.value)">
+                <option ${opt.termType==='Days'?'selected':''}>Days</option>
+                <option ${opt.termType==='Weeks'?'selected':''}>Weeks</option>
+                <option ${opt.termType==='Months'?'selected':''}>Months</option>
+              </select>
+              <div class="spinner">
+                <button class="spin-btn" onclick="adjustTerm(${opt.id}, -1)">−</button>
+                <span class="spin-val" id="term-val-${opt.id}">${opt.termValue}</span>
+                <button class="spin-btn" onclick="adjustTerm(${opt.id}, 1)">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="overview-col">
+        <div class="overview-title">Repayment Overview</div>
+        <div class="cell-grid">
+          ${cell('Funding Amount', fmt(opt.fundingAmount), 'green', false)}
+          ${cell('Factor Rate', opt.factorRate.toFixed(2), '', false)}
+          ${cell('Payback Amount', fmt(c.paybackAmount), 'red', false)}
+        </div>
+        <div class="cell-grid">
+          ${cell('Days', c.days, '', hl==='days')}
+          ${cell('Weeks', c.weeks, '', hl==='weeks')}
+          ${cell('Months', c.months, '', hl==='months')}
+        </div>
+        <div class="cell-grid">
+          ${cell('Daily Payment', fmt(c.dailyPayment), '', hl==='days')}
+          ${cell('Weekly Payment', fmt(c.weeklyPayment), '', hl==='weeks')}
+          ${cell('Monthly Payment', fmt(c.monthlyPayment), '', hl==='months')}
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── Render summary cards ──────────────────────────────────
+function renderSummaryCards() {
+  const fields = getDisplayedFields();
+  const container = document.getElementById('summary-cards');
+  container.innerHTML = options.map((opt, i) => {
+    const c = calc(opt.fundingAmount, opt.factorRate, opt.termValue, opt.termType);
+    const pLabel = opt.termType === 'Days' ? 'Daily' : opt.termType === 'Weeks' ? 'Weekly' : 'Monthly';
+    const pAmt   = opt.termType === 'Days' ? c.dailyPayment : opt.termType === 'Weeks' ? c.weeklyPayment : c.monthlyPayment;
+    const lines = [];
+    if (fields.fundingAmount) lines.push(`Funding Amount: ${fmt(opt.fundingAmount)}`);
+    if (fields.factorRate)    lines.push(`Factor Rate: ${opt.factorRate.toFixed(2)}`);
+    if (fields.termLength)    lines.push(`Term Length: ${opt.termValue} ${opt.termType.toLowerCase()}`);
+    if (fields.payment)       lines.push(`${pLabel} Payments: ${fmt(pAmt)}`);
+    if (fields.paybackAmount) lines.push(`Payback Amount: ${fmt(c.paybackAmount)}`);
+    const text = lines.join('\n');
+    const title = opt.label ? `Option ${i+1} — ${opt.label}` : `Option ${i+1}`;
+    return `<div class="summary-card">
+      <div class="summary-card-header">
+        <span class="summary-card-title">${title}</span>
+        <button class="btn-copy-one" id="copy-one-${opt.id}" onclick="copyOneOption(${opt.id}, ${i})">📋 Copy</button>
+      </div>
+      <div class="summary-text">${text}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── Full render ───────────────────────────────────────────
+function renderAll() {
+  const container = document.getElementById('options-container');
+  container.innerHTML = options.map((opt, i) => renderOptionCard(opt, i)).join('');
+  renderSummaryCards();
+}
+
+// ── Option mutations ──────────────────────────────────────
+function getOption(id) { return options.find(o => o.id === id); }
+
+function updateAmount(id, val) {
+  const opt = getOption(id);
+  opt.fundingAmount = Math.max(0, Number(val) || 0);
+  renderAll();
+}
+
+function adjustAmount(id, delta) {
+  const opt = getOption(id);
+  opt.fundingAmount = Math.max(0, opt.fundingAmount + delta);
+  renderAll();
+}
+
+function adjustFactor(id, delta) {
+  const opt = getOption(id);
+  opt.factorRate = Math.max(1, Math.round((opt.factorRate + delta) * 100) / 100);
+  renderAll();
+}
+
+function updateTermType(id, val) {
+  getOption(id).termType = val;
+  renderAll();
+}
+
+function adjustTerm(id, delta) {
+  const opt = getOption(id);
+  opt.termValue = Math.max(1, opt.termValue + delta);
+  renderAll();
+}
+
+function deleteOption(id) {
+  options = options.filter(o => o.id !== id);
+  renderAll();
+}
+
+function addOption() {
+  options.push({ id: nextId++, label: '', fundingAmount: 10000, factorRate: 1.49, termValue: 36, termType: 'Weeks' });
+  renderAll();
+}
+
+// ── Copy ──────────────────────────────────────────────────
+function copyOneOption(id, index) {
+  const opt = getOption(id);
+  const fields = getDisplayedFields();
+  const text = getSingleOptionText(opt, index, fields);
+  const btn = document.getElementById(`copy-one-${id}`);
+  copyText(text, btn, '📋 Copy');
+}
+
+function setupCopyAll() {
+  ['btn-copy-all-top', 'btn-copy-all-bottom'].forEach(btnId => {
+    const btn = document.getElementById(btnId);
+    btn.addEventListener('click', () => {
+      copyText(getAllSummaryText(), btn, '📋 Copy All');
+    });
+  });
+}
+
+// ── Quick Paste ───────────────────────────────────────────
+function setupQuickPaste() {
+  const textarea = document.getElementById('paste-input');
+  const errorEl  = document.getElementById('parse-error');
+  const resultsEl = document.getElementById('parsed-results');
+  const listEl   = document.getElementById('parsed-list');
+  const countEl  = document.getElementById('parsed-count');
+  const addBtn   = document.getElementById('btn-add-parsed');
+  const selAllBtn = document.getElementById('btn-select-all');
+
+  textarea.addEventListener('input', () => {
+    const val = textarea.value.trim();
+    errorEl.style.display = 'none';
+    textarea.classList.remove('error');
+    if (!val) { resultsEl.style.display = 'none'; parsedOffers = []; selectedOffers = []; return; }
+
+    const lines = val.split('\n').filter(l => l.trim());
+    parsedOffers = lines.map(parseFormula).filter(Boolean);
+    selectedOffers = parsedOffers.map((_, i) => i);
+
+    if (lines.length > 0 && parsedOffers.length === 0) {
+      errorEl.textContent = "Couldn't parse. Try: Kapitus 166k / 1.399 / 120 weeks";
+      errorEl.style.display = 'block';
+      textarea.classList.add('error');
+      resultsEl.style.display = 'none';
+      return;
+    }
+    renderParsed();
+    resultsEl.style.display = 'block';
+  });
+
+  selAllBtn.addEventListener('click', () => {
+    if (selectedOffers.length === parsedOffers.length) {
+      selectedOffers = [];
+    } else {
+      selectedOffers = parsedOffers.map((_, i) => i);
+    }
+    renderParsed();
+  });
+
+  addBtn.addEventListener('click', () => {
+    parsedOffers.filter((_, i) => selectedOffers.includes(i)).forEach(p => {
+      options.push({ id: nextId++, label: p.label, fundingAmount: p.fundingAmount, factorRate: p.factorRate, termValue: p.termValue, termType: p.termType });
+    });
+    textarea.value = '';
+    parsedOffers = [];
+    selectedOffers = [];
+    resultsEl.style.display = 'none';
+    renderAll();
+  });
+
+  function renderParsed() {
+    countEl.innerHTML = `Detected <strong>${parsedOffers.length}</strong> offer${parsedOffers.length > 1 ? 's' : ''} — <strong>${selectedOffers.length}</strong> selected`;
+    selAllBtn.textContent = selectedOffers.length === parsedOffers.length ? 'Deselect All' : 'Select All';
+    addBtn.textContent = `+ Add ${selectedOffers.length > 1 ? selectedOffers.length + ' Options' : selectedOffers.length === 1 ? '1 Option' : 'Options'}`;
+    addBtn.disabled = selectedOffers.length === 0;
+    addBtn.style.background = selectedOffers.length === 0 ? '#cbd5e1' : '#0ea5e9';
+
+    listEl.innerHTML = parsedOffers.map((p, i) => {
+      const isSelected = selectedOffers.includes(i);
+      const payback = Math.round(p.fundingAmount * p.factorRate);
+      const cost = payback - p.fundingAmount;
+      const badges = getBadges(p, parsedOffers);
+      const badgeHtml = badges.map(b =>
+        `<span class="badge" style="background:${b.bg};color:${b.color}">${b.label}</span>`
+      ).join('');
+
+      return `<div class="parsed-item${isSelected ? ' selected' : ''}" onclick="toggleOffer(${i})">
+        <div class="parsed-item-row">
+          <div class="checkbox${isSelected ? ' checked' : ''}">${isSelected ? '✓' : ''}</div>
+          <div class="parsed-info">
+            <div class="parsed-main">
+              ${p.label ? `<span class="parsed-label">${p.label}</span>` : ''}
+              <span class="parsed-amt">${fmt(p.fundingAmount)}</span>
+              <span class="parsed-rate">× ${p.factorRate}</span>
+              <span class="parsed-rate">${p.termValue} ${p.termType}</span>
+              <span class="parsed-payback">→ payback <strong>${fmt(payback)}</strong></span>
+              <span class="parsed-cost">(cost: ${fmt(cost)})</span>
+            </div>
+            ${badges.length > 0 ? `<div class="badges">${badgeHtml}</div>` : ''}
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  window.toggleOffer = function(i) {
+    if (selectedOffers.includes(i)) {
+      selectedOffers = selectedOffers.filter(x => x !== i);
+    } else {
+      selectedOffers.push(i);
+    }
+    renderParsed();
+  };
+}
+
+// ── Field checkboxes ──────────────────────────────────────
+function setupFieldCheckboxes() {
+  ['fundingAmount','factorRate','termLength','payment','paybackAmount'].forEach(key => {
+    document.getElementById('field-' + key).addEventListener('change', renderSummaryCards);
+  });
+}
+
+// ── Init ──────────────────────────────────────────────────
+document.getElementById('btn-add-option').addEventListener('click', addOption);
+setupCopyAll();
+setupQuickPaste();
+setupFieldCheckboxes();
+renderAll();
+</script>
+</body>
+</html>
