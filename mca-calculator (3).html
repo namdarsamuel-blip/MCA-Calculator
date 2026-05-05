@@ -8,306 +8,319 @@
 <meta name="apple-mobile-web-app-title" content="MCA Calc"/>
 <title>MCA Calculator</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  html { height: 100%; }
-  body {
-    font-family: -apple-system, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif;
-    background: #e8edf5;
-    min-height: 100%;
-    padding: max(52px, env(safe-area-inset-top, 52px)) 20px max(20px, env(safe-area-inset-bottom, 20px));
-    color: #0f172a;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
-    font-size: 16px;
-  }
+:root {
+  --blue: #0ea5e9;
+  --blue-dark: #0284c7;
+  --green: #16a34a;
+  --red: #dc2626;
+  --yellow-bg: #fefce8;
+  --yellow-border: #fbbf24;
+  --bg: #eef2f7;
+  --card: #ffffff;
+  --border: #e2e8f0;
+  --text: #0f172a;
+  --sub: #64748b;
+  --muted: #94a3b8;
+  --input-bg: #f1f5f9;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { height: 100%; }
+body {
+  font-family: -apple-system, 'SF Pro Text', 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg);
+  min-height: 100%;
+  color: var(--text);
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: max(32px, env(safe-area-inset-bottom, 32px));
+}
 
-  h1 {
-    font-size: 38px; font-weight: 700; text-align: center;
-    margin-bottom: 8px; letter-spacing: -0.5px; color: #0f172a;
-  }
-  .subtitle { text-align: center; color: #64748b; font-size: 16px; margin-bottom: 36px; }
+/* ── HEADER ── */
+.app-header {
+  padding: max(56px, env(safe-area-inset-top, 56px)) 20px 20px;
+  text-align: center;
+}
+.app-header h1 { font-size: 26px; font-weight: 700; color: var(--text); }
+.app-header p  { font-size: 14px; color: var(--sub); margin-top: 4px; }
 
-  .layout { display: flex; gap: 24px; max-width: 1440px; margin: 0 auto; align-items: flex-start; flex-wrap: wrap; }
-  .left-col { flex: 1 1 620px; min-width: 320px; }
-  .right-col {
-    flex: 0 0 320px; min-width: 300px; background: white;
-    border-radius: 16px; padding: 24px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-    position: sticky; top: 20px;
-  }
+/* ── MAIN ── */
+.main { padding: 0 16px; max-width: 680px; margin: 0 auto; }
 
-  /* Cards */
-  .card {
-    background: white; border-radius: 16px; padding: 28px;
-    margin-bottom: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-  }
-  .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-  .card-title { font-weight: 600; font-size: 20px; color: #0f172a; }
+/* ── CARD ── */
+.card {
+  background: var(--card); border-radius: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.07), 0 0 0 1px rgba(0,0,0,0.04);
+  overflow: hidden;
+}
 
-  .card-body { display: flex; gap: 36px; flex-wrap: wrap; }
-  .inputs-col { flex: 1 1 260px; min-width: 240px; }
-  .overview-col { flex: 1 1 340px; min-width: 300px; }
+/* ── OPTION HEADER ── */
+.option-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 20px 16px;
+}
+.option-title { font-size: 18px; font-weight: 600; }
+.btn-delete {
+  background: var(--input-bg); border: 1px solid var(--border);
+  border-radius: 10px; padding: 8px 12px; font-size: 16px;
+  color: var(--muted); cursor: pointer; line-height: 1;
+}
+.btn-delete:active { background: #fee2e2; color: var(--red); }
 
-  /* Funding Amount */
-  .amount-field { margin-bottom: 18px; }
-  .field-label { font-weight: 500; font-size: 17px; display: block; margin-bottom: 8px; color: #374151; }
-  .amount-box {
-    display: flex; align-items: center;
-    border: 1.5px solid #d1d9e6; border-radius: 12px;
-    background: #eef2f7; padding: 13px 16px; gap: 6px;
-  }
-  .amount-prefix { color: #64748b; font-size: 19px; font-weight: 500; user-select: none; }
-  .amount-input {
-    border: none; outline: none; background: transparent;
-    font-size: 19px; font-weight: 500; width: 100%; font-family: inherit; color: #0f172a;
-  }
+/* ── INPUTS ── */
+.inputs-section { padding: 0 20px 20px; }
+.field-label { font-size: 14px; color: var(--sub); display: block; margin-bottom: 8px; }
 
-  /* Adjust buttons */
-  .adj-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-  .btn-green {
-    padding: 11px 4px; border-radius: 10px; border: none;
-    background: #dcfce7; color: #15803d; font-weight: 500;
-    font-size: 16px; cursor: pointer; font-family: inherit;
-    transition: background 0.15s;
-  }
-  .btn-green:active { background: #bbf7d0; transform: scale(0.97); }
-  .btn-red {
-    padding: 11px 4px; border-radius: 10px; border: none;
-    background: #fee2e2; color: #dc2626; font-weight: 500;
-    font-size: 16px; cursor: pointer; font-family: inherit;
-    transition: background 0.15s;
-  }
-  .btn-red:active { background: #fecaca; transform: scale(0.97); }
+.amount-box {
+  display: flex; align-items: center; gap: 4px;
+  background: var(--input-bg); border: 1.5px solid var(--border);
+  border-radius: 14px; padding: 13px 16px; margin-bottom: 12px;
+}
+.amount-prefix { font-size: 20px; color: var(--sub); line-height: 1; }
+.amount-input {
+  border: none; outline: none; background: transparent;
+  font-size: 22px; width: 100%; font-family: inherit; color: var(--text);
+}
 
-  /* Factor & Term row */
-  .factor-term-row { display: flex; gap: 20px; margin-top: 8px; }
-  .factor-box { flex: 1; }
-  .term-box { flex: 2; }
-  .spinner {
-    display: flex; align-items: center; gap: 8px;
-    border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 9px 12px;
-    background: #f8fafc;
-  }
-  .spin-btn {
-    background: #e2e8f0; border: none; cursor: pointer;
-    font-weight: 700; font-size: 18px; color: #374151;
-    width: 30px; height: 30px; border-radius: 7px;
-    display: flex; align-items: center; justify-content: center;
-    line-height: 1; font-family: inherit; transition: background 0.1s;
-  }
-  .spin-btn:active { background: #cbd5e1; }
-  .spin-val { flex: 1; text-align: center; font-size: 18px; font-weight: 500; color: #0f172a; }
-  .term-select {
-    border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 10px 12px;
-    font-size: 18px; font-weight: 500; background: #f8fafc;
-    cursor: pointer; font-family: inherit; outline: none; color: #0f172a;
-  }
-  .term-row { display: flex; gap: 8px; align-items: center; }
+.adj-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+.btn-adj {
+  padding: 13px 0; border-radius: 12px; border: none;
+  font-size: 16px; cursor: pointer; font-family: inherit;
+}
+.btn-adj.pos { background: #dcfce7; color: var(--green); }
+.btn-adj.pos:active { background: #bbf7d0; }
+.btn-adj.neg { background: #fee2e2; color: var(--red); }
+.btn-adj.neg:active { background: #fecaca; }
 
-  /* Repayment Overview */
-  .overview-title { font-weight: 600; font-size: 19px; margin-bottom: 16px; color: #0f172a; }
-  .cell-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-  .cell {
-    background: #f8fafc; border: 1.5px solid #e2e8f0;
-    border-radius: 12px; padding: 16px 8px; text-align: center;
-  }
-  .cell.highlight { background: #fefce8; border: 2px solid #fde047; }
-  .cell-label { font-size: 13px; font-weight: 500; color: #94a3b8; margin-bottom: 8px; }
-  .cell-value { font-weight: 600; font-size: 20px; color: #0f172a; }
-  .cell-value.green { color: #16a34a; }
-  .cell-value.red { color: #dc2626; }
+.factor-term { display: grid; grid-template-columns: 1fr 1.7fr; gap: 12px; margin-top: 16px; }
 
-  /* Delete btn */
-  .btn-delete {
-    background: #f8fafc; border: 1.5px solid #e2e8f0; cursor: pointer;
-    color: #94a3b8; font-size: 14px; padding: 7px 10px;
-    border-radius: 8px; line-height: 1; transition: all 0.15s;
-  }
-  .btn-delete:active { background: #fee2e2; color: #ef4444; border-color: #fecaca; }
+.spinner-wrap {
+  display: flex; align-items: center;
+  background: var(--input-bg); border: 1.5px solid var(--border);
+  border-radius: 12px; height: 50px; overflow: hidden;
+}
+.spin-btn {
+  width: 44px; height: 50px; border: none; background: transparent;
+  font-size: 22px; color: var(--sub); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.spin-btn:active { background: var(--border); }
+.spin-val { flex: 1; text-align: center; font-size: 18px; color: var(--text); }
 
-  /* Add Option */
-  .btn-add-option {
-    width: 100%; padding: 18px; background: white;
-    border: 2px dashed #cbd5e1; border-radius: 14px; cursor: pointer;
-    font-size: 16px; color: #64748b; font-weight: 600; font-family: inherit;
-    transition: all 0.15s;
-  }
-  .btn-add-option:active { background: #f8fafc; border-color: #94a3b8; }
+.term-row { display: flex; gap: 8px; }
+.term-select {
+  flex: 0 0 auto; border: 1.5px solid var(--border); border-radius: 12px;
+  padding: 0 10px; height: 50px; font-size: 17px;
+  background: var(--input-bg); color: var(--text);
+  font-family: inherit; outline: none; cursor: pointer;
+}
 
-  /* Quick Paste */
-  .paste-title { font-weight: 700; font-size: 20px; margin-bottom: 5px; }
-  .paste-subtitle { font-size: 16px; color: #64748b; margin-bottom: 14px; }
-  .paste-textarea {
-    width: 100%; border: 1.5px solid #e2e8f0; border-radius: 12px;
-    padding: 13px 14px; font-size: 17px; font-family: inherit;
-    resize: vertical; outline: none; color: #0f172a; line-height: 1.6;
-    background: #f8fafc; min-height: 90px; transition: border-color 0.2s;
-  }
-  .paste-textarea:focus { border-color: #93c5fd; }
-  .paste-textarea.error { border-color: #fca5a5; }
-  .parse-error { color: #ef4444; font-size: 13px; margin-top: 6px; }
-  .parsed-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-  .parsed-count { font-size: 16px; color: #64748b; font-weight: 500; }
-  .btn-select-all {
-    background: #f1f5f9; border: 1.5px solid #e2e8f0; border-radius: 8px;
-    padding: 6px 16px; font-size: 15px; font-weight: 600; cursor: pointer;
-    color: #374151; font-family: inherit; transition: all 0.15s;
-  }
-  .btn-select-all:active { background: #e2e8f0; }
-  .parsed-item {
-    border: 2px solid #e2e8f0; border-radius: 12px; padding: 13px 16px;
-    margin-bottom: 8px; cursor: pointer; background: #fafafa; transition: all 0.15s;
-  }
-  .parsed-item.selected { border-color: #0ea5e9; background: #f0f9ff; }
-  .parsed-item-row { display: flex; align-items: flex-start; gap: 12px; }
-  .checkbox {
-    width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0; margin-top: 1px;
-    border: 2px solid #cbd5e1; background: white;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 13px; color: white; transition: all 0.15s;
-  }
-  .checkbox.checked { border-color: #0ea5e9; background: #0ea5e9; }
-  .parsed-info { flex: 1; }
-  .parsed-main { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 6px; font-size: 16px; }
-  .parsed-label { font-weight: 600; color: #0f172a; font-size: 16px; }
-  .parsed-amt { color: #1e293b; font-weight: 600; }
-  .parsed-rate { color: #64748b; font-size: 15px; }
-  .parsed-payback { color: #475569; font-size: 15px; }
-  .parsed-cost { color: #94a3b8; font-size: 14px; }
-  .badges { display: flex; gap: 5px; flex-wrap: wrap; }
-  .badge { font-size: 13px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
-  .btn-add-parsed {
-    padding: 13px 26px; background: #0ea5e9; color: white;
-    border: none; border-radius: 10px; cursor: pointer;
-    font-size: 17px; font-weight: 700; font-family: inherit; margin-top: 12px;
-    transition: background 0.15s;
-  }
-  .btn-add-parsed:active { background: #0284c7; transform: scale(0.98); }
-  .btn-add-parsed:disabled { background: #cbd5e1; cursor: not-allowed; }
+/* ── DIVIDER ── */
+.section-divider { height: 1px; background: var(--border); }
 
-  /* Summary panel */
-  .summary-title { font-size: 21px; font-weight: 600; margin-bottom: 4px; color: #0f172a; }
-  .summary-sub { color: #64748b; font-size: 15px; margin-bottom: 18px; }
-  .fields-label { font-size: 13px; font-weight: 500; margin-bottom: 10px; color: #64748b; }
-  .fields-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 10px; margin-bottom: 18px; }
-  .fields-grid label { display: flex; align-items: center; gap: 7px; font-size: 15px; cursor: pointer; font-weight: 400; color: #374151; }
-  .fields-grid input[type=checkbox] { accent-color: #3b82f6; width: 17px; height: 17px; }
-  .btn-copy-all {
-    width: 100%; padding: 14px; background: #f8fafc; border: 1.5px solid #e2e8f0;
-    border-radius: 10px; cursor: pointer; font-size: 16px; color: #374151;
-    font-weight: 600; font-family: inherit; display: flex; align-items: center;
-    justify-content: center; gap: 7px; transition: all 0.15s;
-  }
-  .btn-copy-all:active { background: #f1f5f9; }
-  .btn-copy-all.copied { background: #dcfce7; border-color: #86efac; color: #15803d; }
+/* ── OVERVIEW ── */
+.overview-section { padding: 18px 20px 20px; }
+.overview-title { font-size: 15px; font-weight: 600; color: var(--sub); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+.cell-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+.cell {
+  background: var(--input-bg); border: 1.5px solid var(--border);
+  border-radius: 12px; padding: 12px 4px; text-align: center;
+}
+.cell.hl { background: var(--yellow-bg); border-color: var(--yellow-border); }
+.cell-lbl { font-size: 11px; color: var(--muted); margin-bottom: 5px; }
+.cell-val { font-size: 17px; font-weight: 600; color: var(--text); }
+.cell-val.grn { color: var(--green); }
+.cell-val.red { color: var(--red); }
 
-  .summary-cards { margin-top: 16px; margin-bottom: 10px; }
-  .summary-card {
-    background: #f8fafc; border-radius: 12px;
-    padding: 16px 18px; margin-bottom: 12px;
-    border: 1.5px solid #e9eef5;
-  }
-  .summary-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-  .summary-card-title { font-size: 16px; font-weight: 600; color: #0f172a; }
-  .btn-copy-one {
-    background: white; border: 1.5px solid #e2e8f0; border-radius: 8px;
-    cursor: pointer; color: #374151; font-size: 14px; font-weight: 600;
-    padding: 7px 14px; font-family: inherit; display: flex; align-items: center;
-    gap: 4px; white-space: nowrap; transition: all 0.15s;
-  }
-  .btn-copy-one:active { background: #f1f5f9; }
-  .btn-copy-one.copied { background: #dcfce7; border-color: #86efac; color: #15803d; }
-  .summary-text { font-size: 15px; color: #475569; line-height: 1.9; white-space: pre-line; }
+/* ── ADD OPTION ── */
+.btn-add-option {
+  width: 100%; padding: 16px; background: var(--card);
+  border: 2px dashed #cbd5e1; border-radius: 20px;
+  font-size: 16px; color: var(--sub); font-family: inherit;
+  cursor: pointer; margin-bottom: 16px;
+}
+.btn-add-option:active { background: var(--input-bg); }
 
-  code {
-    background: #e8edf5; padding: 2px 7px; border-radius: 5px;
-    font-size: 13px; color: #0284c7; font-weight: 600;
-  }
+/* ── QUICK PASTE ── */
+.paste-head { padding: 18px 20px 0; }
+.paste-title { font-size: 17px; font-weight: 600; }
+.paste-sub { font-size: 13px; color: var(--sub); margin-top: 3px; }
+.paste-body { padding: 12px 20px 20px; }
+.paste-ta {
+  width: 100%; border: 1.5px solid var(--border); border-radius: 14px;
+  padding: 12px 14px; font-size: 16px; font-family: inherit;
+  resize: none; outline: none; color: var(--text); line-height: 1.5;
+  background: var(--input-bg); min-height: 76px;
+}
+.paste-ta:focus { border-color: var(--blue); }
+.paste-ta.err   { border-color: #fca5a5; }
+.parse-err { font-size: 13px; color: var(--red); margin-top: 6px; }
 
-  /* Divider between sections in summary */
-  .summary-divider { height: 1px; background: #e9eef5; margin: 14px 0; }
+.parsed-hdr {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 14px; margin-bottom: 10px;
+}
+.parsed-ct { font-size: 14px; color: var(--sub); }
+.btn-sel-all {
+  background: var(--input-bg); border: 1.5px solid var(--border);
+  border-radius: 8px; padding: 6px 14px; font-size: 14px;
+  cursor: pointer; color: var(--text); font-family: inherit;
+}
+.btn-sel-all:active { background: var(--border); }
+
+.parsed-item {
+  border: 2px solid var(--border); border-radius: 14px;
+  padding: 13px 14px; margin-bottom: 8px; cursor: pointer;
+  background: #fafafa;
+}
+.parsed-item.sel { border-color: var(--blue); background: #f0f9ff; }
+.prow { display: flex; gap: 12px; align-items: flex-start; }
+.pcheck {
+  width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0;
+  border: 2px solid #cbd5e1; background: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; color: white; margin-top: 2px;
+}
+.pcheck.on { border-color: var(--blue); background: var(--blue); }
+.pinfo { flex: 1; min-width: 0; }
+.pmain { font-size: 15px; line-height: 1.5; }
+.plbl  { font-weight: 600; }
+.pbadges { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 7px; }
+.pbadge { font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: 20px; }
+
+.btn-add-parsed {
+  width: 100%; padding: 14px; background: var(--blue); color: white;
+  border: none; border-radius: 12px; cursor: pointer;
+  font-size: 16px; font-weight: 600; font-family: inherit; margin-top: 10px;
+}
+.btn-add-parsed:active { background: var(--blue-dark); }
+.btn-add-parsed:disabled { background: #cbd5e1; cursor: not-allowed; }
+
+code {
+  background: #dbeafe; color: var(--blue-dark); padding: 2px 6px;
+  border-radius: 5px; font-size: 12px; font-family: inherit;
+}
+
+/* ── SUMMARY ── */
+.sum-card {
+  background: var(--card); border-radius: 20px; margin-bottom: 16px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.07), 0 0 0 1px rgba(0,0,0,0.04);
+  overflow: hidden;
+}
+.sum-head { padding: 18px 20px 14px; border-bottom: 1px solid var(--border); }
+.sum-title { font-size: 19px; font-weight: 700; }
+.sum-sub   { font-size: 13px; color: var(--sub); margin-top: 2px; }
+
+.fields-sec { padding: 14px 20px; border-bottom: 1px solid var(--border); }
+.fields-lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+.fields-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; }
+.fields-grid label { display: flex; align-items: center; gap: 8px; font-size: 15px; cursor: pointer; }
+.fields-grid input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--blue); flex-shrink: 0; }
+
+.copy-all-wrap { padding: 14px 20px; border-bottom: 1px solid var(--border); }
+.btn-copy-all {
+  width: 100%; padding: 13px; background: var(--input-bg);
+  border: 1.5px solid var(--border); border-radius: 12px;
+  font-size: 15px; color: var(--text); font-family: inherit;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.btn-copy-all:active  { background: var(--border); }
+.btn-copy-all.copied  { background: #dcfce7; border-color: #86efac; color: var(--green); }
+
+.sum-opts { padding: 4px 20px 16px; }
+.sopt { padding: 14px 0; border-bottom: 1px solid var(--border); }
+.sopt:last-child { border-bottom: none; }
+.sopt-hdr { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.sopt-title { font-size: 15px; font-weight: 600; }
+.btn-copy-one {
+  background: var(--input-bg); border: 1.5px solid var(--border);
+  border-radius: 8px; padding: 6px 12px; font-size: 13px;
+  color: var(--text); font-family: inherit; cursor: pointer;
+  display: flex; align-items: center; gap: 4px;
+}
+.btn-copy-one:active { background: var(--border); }
+.btn-copy-one.copied { background: #dcfce7; border-color: #86efac; color: var(--green); }
+.sopt-text { font-size: 14px; color: var(--sub); line-height: 1.9; white-space: pre-line; }
 </style>
 </head>
 <body>
 
-<h1>MCA Calculator</h1>
-<p class="subtitle">Compare repayments and generate summaries for your funding options.</p>
+<div class="app-header">
+  <h1>MCA Calculator</h1>
+  <p>Compare repayments and generate summaries.</p>
+</div>
 
-<div class="layout">
-  <div class="left-col">
-    <!-- Quick Paste -->
-    <div class="card" id="quick-paste-card">
+<div class="main">
+
+  <!-- Quick Paste -->
+  <div class="card">
+    <div class="paste-head">
       <div class="paste-title">⚡ Quick Paste</div>
-      <div class="paste-subtitle">
-        Paste one or multiple offers — e.g. <code>Kapitus 166k / 1.399 / 120 weeks</code>
-      </div>
-      <textarea class="paste-textarea" id="paste-input"
-        placeholder="Kapitus 166k / 1.399 / 120 weeks&#10;Aspire 75k / 1.499 / 32 weeks&#10;Rapid 86k / 1.499 / 60 weeks"
+      <div class="paste-sub">e.g. <code>Kapitus 166k / 1.399 / 120 weeks</code></div>
+    </div>
+    <div class="paste-body">
+      <textarea class="paste-ta" id="paste-input"
+        placeholder="Kapitus 166k / 1.399 / 120 weeks&#10;Aspire 75k / 1.499 / 32 weeks"
       ></textarea>
-      <div class="parse-error" id="parse-error" style="display:none;"></div>
-      <div id="parsed-results" style="display:none; margin-top:12px;">
-        <div class="parsed-header">
-          <div class="parsed-count" id="parsed-count"></div>
-          <button class="btn-select-all" id="btn-select-all">Deselect All</button>
+      <div class="parse-err" id="parse-error" style="display:none;"></div>
+      <div id="parsed-results" style="display:none;">
+        <div class="parsed-hdr">
+          <div class="parsed-ct" id="parsed-count"></div>
+          <button class="btn-sel-all" id="btn-select-all">Deselect All</button>
         </div>
         <div id="parsed-list"></div>
         <button class="btn-add-parsed" id="btn-add-parsed">+ Add Options</button>
       </div>
     </div>
-
-    <!-- Options container -->
-    <div id="options-container"></div>
-
-    <button class="btn-add-option" id="btn-add-option">+ Add Funding Option</button>
   </div>
+
+  <!-- Option cards -->
+  <div id="options-container"></div>
+
+  <button class="btn-add-option" id="btn-add-option">+ Add Funding Option</button>
 
   <!-- Funding Summary -->
-  <div class="right-col">
-    <div class="summary-title">Funding Summary</div>
-    <div class="summary-sub">Copy and paste offers.</div>
-    <div class="fields-label">Displayed Fields</div>
-    <div class="fields-grid">
-      <label><input type="checkbox" id="field-fundingAmount" checked> Funding Amount</label>
-      <label><input type="checkbox" id="field-factorRate" checked> Factor Rate</label>
-      <label><input type="checkbox" id="field-termLength" checked> Term Length</label>
-      <label><input type="checkbox" id="field-payment" checked> Payment</label>
-      <label><input type="checkbox" id="field-paybackAmount" checked> Payback Amount</label>
+  <div class="sum-card">
+    <div class="sum-head">
+      <div class="sum-title">Funding Summary</div>
+      <div class="sum-sub">Copy and paste offers.</div>
     </div>
-    <button class="btn-copy-all" id="btn-copy-all-top">📋 Copy All</button>
-    <div class="summary-cards" id="summary-cards"></div>
-    <button class="btn-copy-all" id="btn-copy-all-bottom">📋 Copy All</button>
+    <div class="fields-sec">
+      <div class="fields-lbl">Displayed Fields</div>
+      <div class="fields-grid">
+        <label><input type="checkbox" id="field-fundingAmount" checked> Funding Amount</label>
+        <label><input type="checkbox" id="field-factorRate" checked> Factor Rate</label>
+        <label><input type="checkbox" id="field-termLength" checked> Term Length</label>
+        <label><input type="checkbox" id="field-payment" checked> Payment</label>
+        <label><input type="checkbox" id="field-paybackAmount" checked> Payback Amount</label>
+      </div>
+    </div>
+    <div class="copy-all-wrap">
+      <button class="btn-copy-all" id="btn-copy-all">📋 Copy All</button>
+    </div>
+    <div class="sum-opts" id="sum-opts"></div>
   </div>
+
 </div>
 
 <script>
-// ── State ────────────────────────────────────────────────
-let options = [{ id: 1, label: '', fundingAmount: 10000, factorRate: 1.49, termValue: 36, termType: 'Weeks' }];
+let options = [{ id:1, label:'', fundingAmount:10000, factorRate:1.49, termValue:36, termType:'Weeks' }];
 let nextId = 2;
-let parsedOffers = [];
-let selectedOffers = [];
+let parsedOffers = [], selectedOffers = [];
 
-// ── Helpers ──────────────────────────────────────────────
-function termToDays(v, t) {
-  if (t === 'Days') return v;
-  if (t === 'Weeks') return v * 5;
-  if (t === 'Months') return v * 20;
-  return v;
+function toDays(v,t){ return t==='Days'?v:t==='Weeks'?v*5:v*20; }
+function calcOpt(fa,fr,tv,tt){
+  const p=Math.round(fa*fr), d=toDays(tv,tt);
+  const w=Math.round(d/5*10)/10, mo=Math.round(d/20*10)/10;
+  return {p, d, w, mo,
+    daily:  d>0?Math.round(p/d):0,
+    weekly: w>0?Math.round(p/w):0,
+    monthly:mo>0?Math.round(p/mo):0};
 }
-function calc(fundingAmount, factorRate, termValue, termType) {
-  const paybackAmount = Math.round(fundingAmount * factorRate);
-  const days = termToDays(termValue, termType);
-  const weeks = Math.round(days / 5 * 10) / 10;
-  const months = Math.round(days / 20 * 10) / 10;
-  return {
-    paybackAmount, days, weeks, months,
-    dailyPayment:   days   > 0 ? Math.round(paybackAmount / days)   : 0,
-    weeklyPayment:  weeks  > 0 ? Math.round(paybackAmount / weeks)  : 0,
-    monthlyPayment: months > 0 ? Math.round(paybackAmount / months) : 0,
-  };
-}
-function fmt(n) { return '$' + Number(n).toLocaleString(); }
-
-function getDisplayedFields() {
+function fmt(n){ return '$'+Number(n).toLocaleString(); }
+function getOpt(id){ return options.find(o=>o.id===id); }
+function flds(){
   return {
     fundingAmount: document.getElementById('field-fundingAmount').checked,
     factorRate:    document.getElementById('field-factorRate').checked,
@@ -316,363 +329,262 @@ function getDisplayedFields() {
     paybackAmount: document.getElementById('field-paybackAmount').checked,
   };
 }
-
-function getSingleOptionText(opt, index, fields) {
-  const c = calc(opt.fundingAmount, opt.factorRate, opt.termValue, opt.termType);
-  const pLabel = opt.termType === 'Days' ? 'Daily' : opt.termType === 'Weeks' ? 'Weekly' : 'Monthly';
-  const pAmt   = opt.termType === 'Days' ? c.dailyPayment : opt.termType === 'Weeks' ? c.weeklyPayment : c.monthlyPayment;
-  const title  = opt.label ? `Option ${index + 1} - ${opt.label}` : `Option ${index + 1}`;
-  const lines  = [title];
-  if (fields.fundingAmount) lines.push(`Funding Amount: ${fmt(opt.fundingAmount)}`);
-  if (fields.factorRate)    lines.push(`Factor Rate: ${opt.factorRate.toFixed(2)}`);
-  if (fields.termLength)    lines.push(`Term Length: ${opt.termValue} ${opt.termType.toLowerCase()}`);
-  if (fields.payment)       lines.push(`${pLabel} Payments: ${fmt(pAmt)}`);
-  if (fields.paybackAmount) lines.push(`Payback Amount: ${fmt(c.paybackAmount)}`);
+function optText(opt,idx,f){
+  const c=calcOpt(opt.fundingAmount,opt.factorRate,opt.termValue,opt.termType);
+  const pl=opt.termType==='Days'?'Daily':opt.termType==='Weeks'?'Weekly':'Monthly';
+  const pa=opt.termType==='Days'?c.daily:opt.termType==='Weeks'?c.weekly:c.monthly;
+  const title=opt.label?`Option ${idx+1} - ${opt.label}`:`Option ${idx+1}`;
+  const lines=[title];
+  if(f.fundingAmount) lines.push(`Funding Amount: ${fmt(opt.fundingAmount)}`);
+  if(f.factorRate)    lines.push(`Factor Rate: ${opt.factorRate.toFixed(2)}`);
+  if(f.termLength)    lines.push(`Term Length: ${opt.termValue} ${opt.termType.toLowerCase()}`);
+  if(f.payment)       lines.push(`${pl} Payments: ${fmt(pa)}`);
+  if(f.paybackAmount) lines.push(`Payback Amount: ${fmt(c.p)}`);
   return lines.join('\n');
 }
+function allText(){ const f=flds(); return options.map((o,i)=>optText(o,i,f)).join('\n\n'); }
 
-function getAllSummaryText() {
-  const fields = getDisplayedFields();
-  return options.map((o, i) => getSingleOptionText(o, i, fields)).join('\n\n');
-}
-
-function copyText(text, btn, label = '📋 Copy') {
-  navigator.clipboard.writeText(text).then(() => {
-    btn.textContent = '✓ Copied';
-    btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = label; btn.classList.remove('copied'); }, 2000);
+function copyText(text, btn){
+  navigator.clipboard.writeText(text).then(()=>{
+    const orig=btn.innerHTML;
+    btn.innerHTML='✓ Copied'; btn.classList.add('copied');
+    setTimeout(()=>{ btn.innerHTML=orig; btn.classList.remove('copied'); },2000);
   });
 }
 
-// ── Parse formula ─────────────────────────────────────────
-function parseFormula(line) {
-  const s = line.trim();
-  const m = s.match(/(\d[\d,.]*)([kKmM]?)\s*\/\s*([\d.]+)\s*\/\s*([\d.]+)\s*(days?|weeks?|months?)/i);
-  if (!m) return null;
-  let amt = parseFloat(m[1].replace(/,/g, ''));
-  const mul = m[2].toLowerCase();
-  if (mul === 'k') amt *= 1000;
-  if (mul === 'm') amt *= 1000000;
-  const factorRate = parseFloat(m[3]);
-  const termValue  = parseFloat(m[4]);
-  const termRaw    = m[5].toLowerCase();
-  let termType = 'Days';
-  if (termRaw.startsWith('week'))  termType = 'Weeks';
-  if (termRaw.startsWith('month')) termType = 'Months';
-  const lm = s.match(/^([a-zA-Z][a-zA-Z\s]*?)(?=\s*[\d])/);
-  const label = lm ? lm[1].trim() : '';
-  if (isNaN(amt) || isNaN(factorRate) || isNaN(termValue)) return null;
-  return { label, fundingAmount: amt, factorRate, termValue, termType };
+// Parse
+function parseFormula(line){
+  const s=line.trim();
+  const m=s.match(/(\d[\d,.]*)([kKmM]?)\s*\/\s*([\d.]+)\s*\/\s*([\d.]+)\s*(days?|weeks?|months?)/i);
+  if(!m) return null;
+  let amt=parseFloat(m[1].replace(/,/g,''));
+  const mul=m[2].toLowerCase();
+  if(mul==='k') amt*=1000; if(mul==='m') amt*=1000000;
+  const fr=parseFloat(m[3]), tv=parseFloat(m[4]);
+  const tt=m[5].toLowerCase().startsWith('week')?'Weeks':m[5].toLowerCase().startsWith('month')?'Months':'Days';
+  const lm=s.match(/^([a-zA-Z][a-zA-Z\s]*?)(?=\s*[\d])/);
+  const label=lm?lm[1].trim():'';
+  if(isNaN(amt)||isNaN(fr)||isNaN(tv)) return null;
+  return {label,fundingAmount:amt,factorRate:fr,termValue:tv,termType:tt};
 }
 
-function getBadges(p, all) {
-  const badges = [];
-  const days = termToDays(p.termValue, p.termType);
-  const allDays = all.map(x => termToDays(x.termValue, x.termType));
-  if (p.fundingAmount === Math.max(...all.map(x => x.fundingAmount)))
-    badges.push({ label: '💰 Highest Amount', color: '#1d4ed8', bg: '#dbeafe' });
-  if (p.factorRate === Math.min(...all.map(x => x.factorRate)))
-    badges.push({ label: '📉 Lowest Rate', color: '#15803d', bg: '#dcfce7' });
-  if (days === Math.max(...allDays))
-    badges.push({ label: '📅 Longest Term', color: '#7c3aed', bg: '#ede9fe' });
-  if (p.fundingAmount * p.factorRate === Math.min(...all.map(x => x.fundingAmount * x.factorRate)))
-    badges.push({ label: '✅ Lowest Payback', color: '#b45309', bg: '#fef3c7' });
-  if ((p.fundingAmount * p.factorRate - p.fundingAmount) === Math.min(...all.map(x => x.fundingAmount * x.factorRate - x.fundingAmount)))
-    badges.push({ label: '💡 Lowest Cost', color: '#0f766e', bg: '#ccfbf1' });
+function getBadges(p,all){
+  const badges=[];
+  const d=toDays(p.termValue,p.termType);
+  const allD=all.map(x=>toDays(x.termValue,x.termType));
+  if(p.fundingAmount===Math.max(...all.map(x=>x.fundingAmount)))
+    badges.push({l:'💰 Highest Amount',c:'#1d4ed8',bg:'#dbeafe'});
+  if(p.factorRate===Math.min(...all.map(x=>x.factorRate)))
+    badges.push({l:'📉 Lowest Rate',c:'#15803d',bg:'#dcfce7'});
+  if(d===Math.max(...allD))
+    badges.push({l:'📅 Longest Term',c:'#7c3aed',bg:'#ede9fe'});
+  if(p.fundingAmount*p.factorRate===Math.min(...all.map(x=>x.fundingAmount*x.factorRate)))
+    badges.push({l:'✅ Lowest Payback',c:'#b45309',bg:'#fef3c7'});
+  if((p.fundingAmount*p.factorRate-p.fundingAmount)===Math.min(...all.map(x=>x.fundingAmount*x.factorRate-x.fundingAmount)))
+    badges.push({l:'💡 Lowest Cost',c:'#0f766e',bg:'#ccfbf1'});
   return badges;
 }
 
-// ── Render option card ────────────────────────────────────
-function renderOptionCard(opt, index) {
-  const c = calc(opt.fundingAmount, opt.factorRate, opt.termValue, opt.termType);
-  const hl = opt.termType === 'Days' ? 'days' : opt.termType === 'Weeks' ? 'weeks' : 'months';
-  const showDelete = options.length > 1;
+// Render option card
+function renderOptionCard(opt, idx){
+  const c=calcOpt(opt.fundingAmount,opt.factorRate,opt.termValue,opt.termType);
+  const hl=opt.termType==='Days'?'days':opt.termType==='Weeks'?'weeks':'months';
+  const del=options.length>1?`<button class="btn-delete" onclick="deleteOption(${opt.id})">🗑</button>`:'';
 
-  function cell(label, value, colorClass, isHL) {
-    return `<div class="cell${isHL ? ' highlight' : ''}">
-      <div class="cell-label">${label}</div>
-      <div class="cell-value${colorClass ? ' ' + colorClass : ''}">${value}</div>
+  function cell(lbl,val,cls,h){
+    return `<div class="cell${h?' hl':''}">
+      <div class="cell-lbl">${lbl}</div>
+      <div class="cell-val${cls?' '+cls:''}">${val}</div>
     </div>`;
   }
 
   return `
   <div class="card" id="option-card-${opt.id}">
-    <div class="card-header">
-      <span class="card-title">Option ${index + 1}${opt.label ? ' — ' + opt.label : ''}</span>
-      ${showDelete ? `<button class="btn-delete" onclick="deleteOption(${opt.id})">🗑</button>` : ''}
+    <div class="option-header">
+      <span class="option-title">Option ${idx+1}${opt.label?' — '+opt.label:''}</span>
+      ${del}
     </div>
-    <div class="card-body">
-      <div class="inputs-col">
-        <div class="amount-field">
-          <label class="field-label">Funding Amount</label>
-          <div class="amount-box">
-            <span class="amount-prefix">$</span>
-            <input class="amount-input" type="text" id="amount-${opt.id}"
-              value="${Number(opt.fundingAmount).toLocaleString()}"
-              onfocus="this.value='${opt.fundingAmount}'; this.type='number';"
-              onblur="updateAmount(${opt.id}, this.value); this.type='text'; this.value=Number(this.value||0).toLocaleString();"
-              onchange="updateAmount(${opt.id}, this.value)">
+    <div class="inputs-section">
+      <label class="field-label">Funding Amount</label>
+      <div class="amount-box">
+        <span class="amount-prefix">$</span>
+        <input class="amount-input" type="text" id="amt-${opt.id}"
+          value="${Number(opt.fundingAmount).toLocaleString()}"
+          onfocus="this.value='${opt.fundingAmount}';this.type='number';"
+          onblur="updateAmount(${opt.id},this.value);this.type='text';this.value=Number(this.value||0).toLocaleString();"
+          onchange="updateAmount(${opt.id},this.value)">
+      </div>
+      <div class="adj-row">
+        <button class="btn-adj pos" onclick="adjustAmount(${opt.id},100)">+100</button>
+        <button class="btn-adj pos" onclick="adjustAmount(${opt.id},1000)">+1k</button>
+        <button class="btn-adj pos" onclick="adjustAmount(${opt.id},10000)">+10k</button>
+      </div>
+      <div class="adj-row" style="margin-bottom:0">
+        <button class="btn-adj neg" onclick="adjustAmount(${opt.id},-100)">-100</button>
+        <button class="btn-adj neg" onclick="adjustAmount(${opt.id},-1000)">-1k</button>
+        <button class="btn-adj neg" onclick="adjustAmount(${opt.id},-10000)">-10k</button>
+      </div>
+      <div class="factor-term">
+        <div>
+          <label class="field-label" style="margin-top:16px">Factor Rate</label>
+          <div class="spinner-wrap">
+            <button class="spin-btn" onclick="adjustFactor(${opt.id},-0.01)">−</button>
+            <span class="spin-val">${opt.factorRate.toFixed(2)}</span>
+            <button class="spin-btn" onclick="adjustFactor(${opt.id},0.01)">+</button>
           </div>
         </div>
-        <div class="adj-grid">
-          <button class="btn-green" onclick="adjustAmount(${opt.id}, 100)">+100</button>
-          <button class="btn-green" onclick="adjustAmount(${opt.id}, 1000)">+1k</button>
-          <button class="btn-green" onclick="adjustAmount(${opt.id}, 10000)">+10k</button>
-        </div>
-        <div class="adj-grid" style="margin-bottom:20px;">
-          <button class="btn-red" onclick="adjustAmount(${opt.id}, -100)">-100</button>
-          <button class="btn-red" onclick="adjustAmount(${opt.id}, -1000)">-1k</button>
-          <button class="btn-red" onclick="adjustAmount(${opt.id}, -10000)">-10k</button>
-        </div>
-        <div class="factor-term-row">
-          <div class="factor-box">
-            <label class="field-label">Factor Rate</label>
-            <div class="spinner">
-              <button class="spin-btn" onclick="adjustFactor(${opt.id}, -0.01)">−</button>
-              <span class="spin-val" id="factor-val-${opt.id}">${opt.factorRate.toFixed(2)}</span>
-              <button class="spin-btn" onclick="adjustFactor(${opt.id}, 0.01)">+</button>
-            </div>
-          </div>
-          <div class="term-box">
-            <label class="field-label">Term</label>
-            <div class="term-row">
-              <select class="term-select" id="term-type-${opt.id}" onchange="updateTermType(${opt.id}, this.value)">
-                <option ${opt.termType==='Days'?'selected':''}>Days</option>
-                <option ${opt.termType==='Weeks'?'selected':''}>Weeks</option>
-                <option ${opt.termType==='Months'?'selected':''}>Months</option>
-              </select>
-              <div class="spinner">
-                <button class="spin-btn" onclick="adjustTerm(${opt.id}, -1)">−</button>
-                <span class="spin-val" id="term-val-${opt.id}">${opt.termValue}</span>
-                <button class="spin-btn" onclick="adjustTerm(${opt.id}, 1)">+</button>
-              </div>
+        <div>
+          <label class="field-label" style="margin-top:16px">Term</label>
+          <div class="term-row">
+            <select class="term-select" onchange="updateTermType(${opt.id},this.value)">
+              <option ${opt.termType==='Days'?'selected':''}>Days</option>
+              <option ${opt.termType==='Weeks'?'selected':''}>Weeks</option>
+              <option ${opt.termType==='Months'?'selected':''}>Months</option>
+            </select>
+            <div class="spinner-wrap" style="flex:1">
+              <button class="spin-btn" onclick="adjustTerm(${opt.id},-1)">−</button>
+              <span class="spin-val">${opt.termValue}</span>
+              <button class="spin-btn" onclick="adjustTerm(${opt.id},1)">+</button>
             </div>
           </div>
         </div>
       </div>
-      <div class="overview-col">
-        <div class="overview-title">Repayment Overview</div>
-        <div class="cell-grid">
-          ${cell('Funding Amount', fmt(opt.fundingAmount), 'green', false)}
-          ${cell('Factor Rate', opt.factorRate.toFixed(2), '', false)}
-          ${cell('Payback Amount', fmt(c.paybackAmount), 'red', false)}
-        </div>
-        <div class="cell-grid">
-          ${cell('Days', c.days, '', hl==='days')}
-          ${cell('Weeks', c.weeks, '', hl==='weeks')}
-          ${cell('Months', c.months, '', hl==='months')}
-        </div>
-        <div class="cell-grid">
-          ${cell('Daily Payment', fmt(c.dailyPayment), '', hl==='days')}
-          ${cell('Weekly Payment', fmt(c.weeklyPayment), '', hl==='weeks')}
-          ${cell('Monthly Payment', fmt(c.monthlyPayment), '', hl==='months')}
-        </div>
+    </div>
+    <div class="section-divider"></div>
+    <div class="overview-section">
+      <div class="overview-title">Repayment Overview</div>
+      <div class="cell-grid">
+        ${cell('Funding Amount',fmt(opt.fundingAmount),'grn',false)}
+        ${cell('Factor Rate',opt.factorRate.toFixed(2),'',false)}
+        ${cell('Payback Amount',fmt(c.p),'red',false)}
+      </div>
+      <div class="cell-grid">
+        ${cell('Days',c.d,'',hl==='days')}
+        ${cell('Weeks',c.w,'',hl==='weeks')}
+        ${cell('Months',c.mo,'',hl==='months')}
+      </div>
+      <div class="cell-grid">
+        ${cell('Daily',fmt(c.daily),'',hl==='days')}
+        ${cell('Weekly',fmt(c.weekly),'',hl==='weeks')}
+        ${cell('Monthly',fmt(c.monthly),'',hl==='months')}
       </div>
     </div>
   </div>`;
 }
 
-// ── Render summary cards ──────────────────────────────────
-function renderSummaryCards() {
-  const fields = getDisplayedFields();
-  const container = document.getElementById('summary-cards');
-  container.innerHTML = options.map((opt, i) => {
-    const c = calc(opt.fundingAmount, opt.factorRate, opt.termValue, opt.termType);
-    const pLabel = opt.termType === 'Days' ? 'Daily' : opt.termType === 'Weeks' ? 'Weekly' : 'Monthly';
-    const pAmt   = opt.termType === 'Days' ? c.dailyPayment : opt.termType === 'Weeks' ? c.weeklyPayment : c.monthlyPayment;
-    const lines = [];
-    if (fields.fundingAmount) lines.push(`Funding Amount: ${fmt(opt.fundingAmount)}`);
-    if (fields.factorRate)    lines.push(`Factor Rate: ${opt.factorRate.toFixed(2)}`);
-    if (fields.termLength)    lines.push(`Term Length: ${opt.termValue} ${opt.termType.toLowerCase()}`);
-    if (fields.payment)       lines.push(`${pLabel} Payments: ${fmt(pAmt)}`);
-    if (fields.paybackAmount) lines.push(`Payback Amount: ${fmt(c.paybackAmount)}`);
-    const text = lines.join('\n');
-    const title = opt.label ? `Option ${i+1} — ${opt.label}` : `Option ${i+1}`;
-    return `<div class="summary-card">
-      <div class="summary-card-header">
-        <span class="summary-card-title">${title}</span>
-        <button class="btn-copy-one" id="copy-one-${opt.id}" onclick="copyOneOption(${opt.id}, ${i})">📋 Copy</button>
+function renderSummary(){
+  const f=flds();
+  document.getElementById('sum-opts').innerHTML=options.map((opt,i)=>{
+    const c=calcOpt(opt.fundingAmount,opt.factorRate,opt.termValue,opt.termType);
+    const pl=opt.termType==='Days'?'Daily':opt.termType==='Weeks'?'Weekly':'Monthly';
+    const pa=opt.termType==='Days'?c.daily:opt.termType==='Weeks'?c.weekly:c.monthly;
+    const lines=[];
+    if(f.fundingAmount) lines.push(`Funding Amount: ${fmt(opt.fundingAmount)}`);
+    if(f.factorRate)    lines.push(`Factor Rate: ${opt.factorRate.toFixed(2)}`);
+    if(f.termLength)    lines.push(`Term Length: ${opt.termValue} ${opt.termType.toLowerCase()}`);
+    if(f.payment)       lines.push(`${pl} Payments: ${fmt(pa)}`);
+    if(f.paybackAmount) lines.push(`Payback Amount: ${fmt(c.p)}`);
+    const title=opt.label?`Option ${i+1} — ${opt.label}`:`Option ${i+1}`;
+    return `<div class="sopt">
+      <div class="sopt-hdr">
+        <span class="sopt-title">${title}</span>
+        <button class="btn-copy-one" id="cpy-${opt.id}" onclick="copyOne(${opt.id},${i})">📋 Copy</button>
       </div>
-      <div class="summary-text">${text}</div>
+      <div class="sopt-text">${lines.join('\n')}</div>
     </div>`;
   }).join('');
 }
 
-// ── Full render ───────────────────────────────────────────
-function renderAll() {
-  const container = document.getElementById('options-container');
-  container.innerHTML = options.map((opt, i) => renderOptionCard(opt, i)).join('');
-  renderSummaryCards();
+function renderAll(){
+  document.getElementById('options-container').innerHTML=options.map((o,i)=>renderOptionCard(o,i)).join('');
+  renderSummary();
 }
 
-// ── Option mutations ──────────────────────────────────────
-function getOption(id) { return options.find(o => o.id === id); }
+function updateAmount(id,val){ getOpt(id).fundingAmount=Math.max(0,Number(val)||0); renderAll(); }
+function adjustAmount(id,d){   getOpt(id).fundingAmount=Math.max(0,getOpt(id).fundingAmount+d); renderAll(); }
+function adjustFactor(id,d){   getOpt(id).factorRate=Math.max(1,Math.round((getOpt(id).factorRate+d)*100)/100); renderAll(); }
+function updateTermType(id,v){ getOpt(id).termType=v; renderAll(); }
+function adjustTerm(id,d){     getOpt(id).termValue=Math.max(1,getOpt(id).termValue+d); renderAll(); }
+function deleteOption(id){     options=options.filter(o=>o.id!==id); renderAll(); }
+function addOption(){          options.push({id:nextId++,label:'',fundingAmount:10000,factorRate:1.49,termValue:36,termType:'Weeks'}); renderAll(); }
 
-function updateAmount(id, val) {
-  const opt = getOption(id);
-  opt.fundingAmount = Math.max(0, Number(val) || 0);
-  renderAll();
+function copyOne(id,idx){
+  copyText(optText(getOpt(id),idx,flds()), document.getElementById(`cpy-${id}`));
 }
+document.getElementById('btn-copy-all').addEventListener('click',function(){ copyText(allText(),this); });
 
-function adjustAmount(id, delta) {
-  const opt = getOption(id);
-  opt.fundingAmount = Math.max(0, opt.fundingAmount + delta);
-  renderAll();
-}
+// Quick Paste
+(function(){
+  const ta=document.getElementById('paste-input');
+  const errEl=document.getElementById('parse-error');
+  const resEl=document.getElementById('parsed-results');
+  const listEl=document.getElementById('parsed-list');
+  const cntEl=document.getElementById('parsed-count');
+  const addBtn=document.getElementById('btn-add-parsed');
+  const selBtn=document.getElementById('btn-select-all');
 
-function adjustFactor(id, delta) {
-  const opt = getOption(id);
-  opt.factorRate = Math.max(1, Math.round((opt.factorRate + delta) * 100) / 100);
-  renderAll();
-}
-
-function updateTermType(id, val) {
-  getOption(id).termType = val;
-  renderAll();
-}
-
-function adjustTerm(id, delta) {
-  const opt = getOption(id);
-  opt.termValue = Math.max(1, opt.termValue + delta);
-  renderAll();
-}
-
-function deleteOption(id) {
-  options = options.filter(o => o.id !== id);
-  renderAll();
-}
-
-function addOption() {
-  options.push({ id: nextId++, label: '', fundingAmount: 10000, factorRate: 1.49, termValue: 36, termType: 'Weeks' });
-  renderAll();
-}
-
-// ── Copy ──────────────────────────────────────────────────
-function copyOneOption(id, index) {
-  const opt = getOption(id);
-  const fields = getDisplayedFields();
-  const text = getSingleOptionText(opt, index, fields);
-  const btn = document.getElementById(`copy-one-${id}`);
-  copyText(text, btn, '📋 Copy');
-}
-
-function setupCopyAll() {
-  ['btn-copy-all-top', 'btn-copy-all-bottom'].forEach(btnId => {
-    const btn = document.getElementById(btnId);
-    btn.addEventListener('click', () => {
-      copyText(getAllSummaryText(), btn, '📋 Copy All');
-    });
-  });
-}
-
-// ── Quick Paste ───────────────────────────────────────────
-function setupQuickPaste() {
-  const textarea = document.getElementById('paste-input');
-  const errorEl  = document.getElementById('parse-error');
-  const resultsEl = document.getElementById('parsed-results');
-  const listEl   = document.getElementById('parsed-list');
-  const countEl  = document.getElementById('parsed-count');
-  const addBtn   = document.getElementById('btn-add-parsed');
-  const selAllBtn = document.getElementById('btn-select-all');
-
-  textarea.addEventListener('input', () => {
-    const val = textarea.value.trim();
-    errorEl.style.display = 'none';
-    textarea.classList.remove('error');
-    if (!val) { resultsEl.style.display = 'none'; parsedOffers = []; selectedOffers = []; return; }
-
-    const lines = val.split('\n').filter(l => l.trim());
-    parsedOffers = lines.map(parseFormula).filter(Boolean);
-    selectedOffers = parsedOffers.map((_, i) => i);
-
-    if (lines.length > 0 && parsedOffers.length === 0) {
-      errorEl.textContent = "Couldn't parse. Try: Kapitus 166k / 1.399 / 120 weeks";
-      errorEl.style.display = 'block';
-      textarea.classList.add('error');
-      resultsEl.style.display = 'none';
-      return;
+  ta.addEventListener('input',()=>{
+    const val=ta.value.trim();
+    errEl.style.display='none'; ta.classList.remove('err');
+    if(!val){ resEl.style.display='none'; parsedOffers=[]; selectedOffers=[]; return; }
+    const lines=val.split('\n').filter(l=>l.trim());
+    parsedOffers=lines.map(parseFormula).filter(Boolean);
+    selectedOffers=parsedOffers.map((_,i)=>i);
+    if(lines.length>0&&parsedOffers.length===0){
+      errEl.textContent="Couldn't parse. Try: Kapitus 166k / 1.399 / 120 weeks";
+      errEl.style.display='block'; ta.classList.add('err'); resEl.style.display='none'; return;
     }
-    renderParsed();
-    resultsEl.style.display = 'block';
+    renderParsed(); resEl.style.display='block';
   });
 
-  selAllBtn.addEventListener('click', () => {
-    if (selectedOffers.length === parsedOffers.length) {
-      selectedOffers = [];
-    } else {
-      selectedOffers = parsedOffers.map((_, i) => i);
-    }
+  selBtn.addEventListener('click',()=>{
+    selectedOffers=selectedOffers.length===parsedOffers.length?[]:parsedOffers.map((_,i)=>i);
     renderParsed();
   });
 
-  addBtn.addEventListener('click', () => {
-    parsedOffers.filter((_, i) => selectedOffers.includes(i)).forEach(p => {
-      options.push({ id: nextId++, label: p.label, fundingAmount: p.fundingAmount, factorRate: p.factorRate, termValue: p.termValue, termType: p.termType });
-    });
-    textarea.value = '';
-    parsedOffers = [];
-    selectedOffers = [];
-    resultsEl.style.display = 'none';
+  addBtn.addEventListener('click',()=>{
+    const toAdd=parsedOffers.filter((_,i)=>selectedOffers.includes(i));
+    // If only the default blank option exists, replace it so pasted items start at Option 1
+    const isDefault=options.length===1&&options[0].label===''&&options[0].fundingAmount===10000&&options[0].factorRate===1.49;
+    if(isDefault) options=[];
+    toAdd.forEach(p=>options.push({id:nextId++,label:p.label,fundingAmount:p.fundingAmount,factorRate:p.factorRate,termValue:p.termValue,termType:p.termType}));
+    ta.value=''; parsedOffers=[]; selectedOffers=[]; resEl.style.display='none';
     renderAll();
   });
 
-  function renderParsed() {
-    countEl.innerHTML = `Detected <strong>${parsedOffers.length}</strong> offer${parsedOffers.length > 1 ? 's' : ''} — <strong>${selectedOffers.length}</strong> selected`;
-    selAllBtn.textContent = selectedOffers.length === parsedOffers.length ? 'Deselect All' : 'Select All';
-    addBtn.textContent = `+ Add ${selectedOffers.length > 1 ? selectedOffers.length + ' Options' : selectedOffers.length === 1 ? '1 Option' : 'Options'}`;
-    addBtn.disabled = selectedOffers.length === 0;
-    addBtn.style.background = selectedOffers.length === 0 ? '#cbd5e1' : '#0ea5e9';
-
-    listEl.innerHTML = parsedOffers.map((p, i) => {
-      const isSelected = selectedOffers.includes(i);
-      const payback = Math.round(p.fundingAmount * p.factorRate);
-      const cost = payback - p.fundingAmount;
-      const badges = getBadges(p, parsedOffers);
-      const badgeHtml = badges.map(b =>
-        `<span class="badge" style="background:${b.bg};color:${b.color}">${b.label}</span>`
-      ).join('');
-
-      return `<div class="parsed-item${isSelected ? ' selected' : ''}" onclick="toggleOffer(${i})">
-        <div class="parsed-item-row">
-          <div class="checkbox${isSelected ? ' checked' : ''}">${isSelected ? '✓' : ''}</div>
-          <div class="parsed-info">
-            <div class="parsed-main">
-              ${p.label ? `<span class="parsed-label">${p.label}</span>` : ''}
-              <span class="parsed-amt">${fmt(p.fundingAmount)}</span>
-              <span class="parsed-rate">× ${p.factorRate}</span>
-              <span class="parsed-rate">${p.termValue} ${p.termType}</span>
-              <span class="parsed-payback">→ payback <strong>${fmt(payback)}</strong></span>
-              <span class="parsed-cost">(cost: ${fmt(cost)})</span>
-            </div>
-            ${badges.length > 0 ? `<div class="badges">${badgeHtml}</div>` : ''}
+  function renderParsed(){
+    cntEl.innerHTML=`Detected <strong>${parsedOffers.length}</strong> offer${parsedOffers.length>1?'s':''} — <strong>${selectedOffers.length}</strong> selected`;
+    selBtn.textContent=selectedOffers.length===parsedOffers.length?'Deselect All':'Select All';
+    addBtn.textContent=`+ Add ${selectedOffers.length>1?selectedOffers.length+' Options':selectedOffers.length===1?'1 Option':'Options'}`;
+    addBtn.disabled=selectedOffers.length===0;
+    addBtn.style.background=selectedOffers.length===0?'#cbd5e1':'';
+    listEl.innerHTML=parsedOffers.map((p,i)=>{
+      const isSel=selectedOffers.includes(i);
+      const payback=Math.round(p.fundingAmount*p.factorRate);
+      const cost=payback-p.fundingAmount;
+      const badges=getBadges(p,parsedOffers);
+      return `<div class="parsed-item${isSel?' sel':''}" onclick="toggleOffer(${i})">
+        <div class="prow">
+          <div class="pcheck${isSel?' on':''}">${isSel?'✓':''}</div>
+          <div class="pinfo">
+            <div class="pmain">${p.label?`<span class="plbl">${p.label}</span> `:''}${fmt(p.fundingAmount)} × ${p.factorRate} · ${p.termValue} ${p.termType}<br><span style="color:var(--sub)">→ payback <strong style="color:var(--text)">${fmt(payback)}</strong> <span style="font-size:13px;color:var(--muted)">(cost: ${fmt(cost)})</span></span></div>
+            ${badges.length?`<div class="pbadges">${badges.map(b=>`<span class="pbadge" style="background:${b.bg};color:${b.c}">${b.l}</span>`).join('')}</div>`:''}
           </div>
         </div>
       </div>`;
     }).join('');
   }
 
-  window.toggleOffer = function(i) {
-    if (selectedOffers.includes(i)) {
-      selectedOffers = selectedOffers.filter(x => x !== i);
-    } else {
-      selectedOffers.push(i);
-    }
+  window.toggleOffer=function(i){
+    selectedOffers=selectedOffers.includes(i)?selectedOffers.filter(x=>x!==i):[...selectedOffers,i];
     renderParsed();
   };
-}
+})();
 
-// ── Field checkboxes ──────────────────────────────────────
-function setupFieldCheckboxes() {
-  ['fundingAmount','factorRate','termLength','payment','paybackAmount'].forEach(key => {
-    document.getElementById('field-' + key).addEventListener('change', renderSummaryCards);
-  });
-}
-
-// ── Init ──────────────────────────────────────────────────
-document.getElementById('btn-add-option').addEventListener('click', addOption);
-setupCopyAll();
-setupQuickPaste();
-setupFieldCheckboxes();
+['fundingAmount','factorRate','termLength','payment','paybackAmount'].forEach(k=>{
+  document.getElementById('field-'+k).addEventListener('change',renderSummary);
+});
+document.getElementById('btn-add-option').addEventListener('click',addOption);
 renderAll();
 </script>
 </body>
