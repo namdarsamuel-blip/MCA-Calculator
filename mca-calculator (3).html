@@ -66,16 +66,15 @@ body {
   .layout {
     flex-direction: row;
     align-items: flex-start;
-    gap: 24px;
+    gap: 20px;
   }
   .left-col  { flex: 1 1 0; min-width: 0; }
   .right-col {
-    flex: 0 0 320px;
-    width: 320px;
+    flex: 0 0 300px;
+    width: 300px;
     position: sticky;
-    top: 24px;
+    top: 16px;
   }
-  /* On desktop the summary card sits in right-col — remove bottom margin */
   .right-col .sum-card { margin-bottom: 0; }
 }
 
@@ -241,40 +240,40 @@ code {
   box-shadow: 0 1px 6px rgba(0,0,0,0.07), 0 0 0 1px rgba(0,0,0,0.04);
   overflow: hidden;
 }
-.sum-head { padding: 18px 20px 14px; border-bottom: 1px solid var(--border); }
-.sum-title { font-size: 19px; font-weight: 700; }
-.sum-sub   { font-size: 13px; color: var(--sub); margin-top: 2px; }
+.sum-head { padding: 14px 16px 10px; border-bottom: 1px solid var(--border); }
+.sum-title { font-size: 16px; font-weight: 700; }
+.sum-sub   { font-size: 12px; color: var(--sub); margin-top: 1px; }
 
-.fields-sec { padding: 14px 20px; border-bottom: 1px solid var(--border); }
-.fields-lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
-.fields-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; }
-.fields-grid label { display: flex; align-items: center; gap: 8px; font-size: 15px; cursor: pointer; }
-.fields-grid input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--blue); flex-shrink: 0; }
+.fields-sec { padding: 10px 16px; border-bottom: 1px solid var(--border); }
+.fields-lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 7px; }
+.fields-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px 10px; }
+.fields-grid label { display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; white-space: nowrap; }
+.fields-grid input[type=checkbox] { width: 14px; height: 14px; accent-color: var(--blue); flex-shrink: 0; }
 
-.copy-all-wrap { padding: 14px 20px; border-bottom: 1px solid var(--border); }
+.copy-all-wrap { padding: 10px 16px; border-bottom: 1px solid var(--border); }
 .btn-copy-all {
-  width: 100%; padding: 13px; background: var(--input-bg);
-  border: 1.5px solid var(--border); border-radius: 12px;
-  font-size: 15px; color: var(--text); font-family: inherit;
-  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
+  width: 100%; padding: 10px; background: var(--input-bg);
+  border: 1.5px solid var(--border); border-radius: 10px;
+  font-size: 13px; color: var(--text); font-family: inherit;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;
 }
 .btn-copy-all:active  { background: var(--border); }
 .btn-copy-all.copied  { background: #dcfce7; border-color: #86efac; color: var(--green); }
 
-.sum-opts { padding: 4px 20px 16px; }
-.sopt { padding: 14px 0; border-bottom: 1px solid var(--border); }
-.sopt:last-child { border-bottom: none; }
-.sopt-hdr { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-.sopt-title { font-size: 15px; font-weight: 600; }
+.sum-opts { padding: 2px 16px 12px; }
+.sopt { padding: 10px 0; border-bottom: 1px solid var(--border); }
+.sopt:last-child { border-bottom: none; padding-bottom: 0; }
+.sopt-hdr { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.sopt-title { font-size: 13px; font-weight: 600; }
 .btn-copy-one {
-  background: var(--input-bg); border: 1.5px solid var(--border);
-  border-radius: 8px; padding: 6px 12px; font-size: 13px;
+  background: var(--input-bg); border: 1px solid var(--border);
+  border-radius: 6px; padding: 4px 10px; font-size: 12px;
   color: var(--text); font-family: inherit; cursor: pointer;
-  display: flex; align-items: center; gap: 4px;
+  display: flex; align-items: center; gap: 3px;
 }
 .btn-copy-one:active { background: var(--border); }
 .btn-copy-one.copied { background: #dcfce7; border-color: #86efac; color: var(--green); }
-.sopt-text { font-size: 14px; color: var(--sub); line-height: 1.9; white-space: pre-line; }
+.sopt-text { font-size: 13px; color: var(--sub); line-height: 1.7; white-space: pre-line; }
 </style>
 </head>
 <body>
