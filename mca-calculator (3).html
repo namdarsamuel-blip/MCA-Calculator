@@ -37,14 +37,47 @@ body {
 
 /* ── HEADER ── */
 .app-header {
-  padding: max(56px, env(safe-area-inset-top, 56px)) 20px 20px;
+  padding: max(56px, env(safe-area-inset-top, 56px)) 20px 24px;
   text-align: center;
 }
 .app-header h1 { font-size: 26px; font-weight: 700; color: var(--text); }
 .app-header p  { font-size: 14px; color: var(--sub); margin-top: 4px; }
 
-/* ── MAIN ── */
-.main { padding: 0 16px; max-width: 680px; margin: 0 auto; }
+/* ── MAIN / LAYOUT ── */
+.main {
+  padding: 0 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Mobile: single column */
+.layout {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.left-col  { min-width: 0; }
+.right-col { min-width: 0; }
+
+/* Desktop: two columns */
+@media (min-width: 860px) {
+  .main { padding: 0 24px; }
+  .app-header h1 { font-size: 32px; }
+  .layout {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 24px;
+  }
+  .left-col  { flex: 1 1 0; min-width: 0; }
+  .right-col {
+    flex: 0 0 320px;
+    width: 320px;
+    position: sticky;
+    top: 24px;
+  }
+  /* On desktop the summary card sits in right-col — remove bottom margin */
+  .right-col .sum-card { margin-bottom: 0; }
+}
 
 /* ── CARD ── */
 .card {
@@ -252,57 +285,67 @@ code {
 </div>
 
 <div class="main">
+  <div class="layout">
 
-  <!-- Quick Paste -->
-  <div class="card">
-    <div class="paste-head">
-      <div class="paste-title">⚡ Quick Paste</div>
-      <div class="paste-sub">e.g. <code>Kapitus 166k / 1.399 / 120 weeks</code></div>
-    </div>
-    <div class="paste-body">
-      <textarea class="paste-ta" id="paste-input"
-        placeholder="Kapitus 166k / 1.399 / 120 weeks&#10;Aspire 75k / 1.499 / 32 weeks"
-      ></textarea>
-      <div class="parse-err" id="parse-error" style="display:none;"></div>
-      <div id="parsed-results" style="display:none;">
-        <div class="parsed-hdr">
-          <div class="parsed-ct" id="parsed-count"></div>
-          <button class="btn-sel-all" id="btn-select-all">Deselect All</button>
+    <!-- LEFT COLUMN: Quick Paste + Options -->
+    <div class="left-col">
+
+      <!-- Quick Paste -->
+      <div class="card">
+        <div class="paste-head">
+          <div class="paste-title">⚡ Quick Paste</div>
+          <div class="paste-sub">e.g. <code>Kapitus 166k / 1.399 / 120 weeks</code></div>
         </div>
-        <div id="parsed-list"></div>
-        <button class="btn-add-parsed" id="btn-add-parsed">+ Add Options</button>
+        <div class="paste-body">
+          <textarea class="paste-ta" id="paste-input"
+            placeholder="Kapitus 166k / 1.399 / 120 weeks&#10;Aspire 75k / 1.499 / 32 weeks"
+          ></textarea>
+          <div class="parse-err" id="parse-error" style="display:none;"></div>
+          <div id="parsed-results" style="display:none;">
+            <div class="parsed-hdr">
+              <div class="parsed-ct" id="parsed-count"></div>
+              <button class="btn-sel-all" id="btn-select-all">Deselect All</button>
+            </div>
+            <div id="parsed-list"></div>
+            <button class="btn-add-parsed" id="btn-add-parsed">+ Add Options</button>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
 
-  <!-- Option cards -->
-  <div id="options-container"></div>
+      <!-- Option cards -->
+      <div id="options-container"></div>
 
-  <button class="btn-add-option" id="btn-add-option">+ Add Funding Option</button>
+      <button class="btn-add-option" id="btn-add-option">+ Add Funding Option</button>
 
-  <!-- Funding Summary -->
-  <div class="sum-card">
-    <div class="sum-head">
-      <div class="sum-title">Funding Summary</div>
-      <div class="sum-sub">Copy and paste offers.</div>
-    </div>
-    <div class="fields-sec">
-      <div class="fields-lbl">Displayed Fields</div>
-      <div class="fields-grid">
-        <label><input type="checkbox" id="field-fundingAmount" checked> Funding Amount</label>
-        <label><input type="checkbox" id="field-factorRate" checked> Factor Rate</label>
-        <label><input type="checkbox" id="field-termLength" checked> Term Length</label>
-        <label><input type="checkbox" id="field-payment" checked> Payment</label>
-        <label><input type="checkbox" id="field-paybackAmount" checked> Payback Amount</label>
+      <!-- Funding Summary (mobile: in left col, desktop: moves to right col via JS) -->
+      <div class="sum-card mobile-summary" id="summary-panel">
+        <div class="sum-head">
+          <div class="sum-title">Funding Summary</div>
+          <div class="sum-sub">Copy and paste offers.</div>
+        </div>
+        <div class="fields-sec">
+          <div class="fields-lbl">Displayed Fields</div>
+          <div class="fields-grid">
+            <label><input type="checkbox" id="field-fundingAmount" checked> Funding Amount</label>
+            <label><input type="checkbox" id="field-factorRate" checked> Factor Rate</label>
+            <label><input type="checkbox" id="field-termLength" checked> Term Length</label>
+            <label><input type="checkbox" id="field-payment" checked> Payment</label>
+            <label><input type="checkbox" id="field-paybackAmount" checked> Payback Amount</label>
+          </div>
+        </div>
+        <div class="copy-all-wrap">
+          <button class="btn-copy-all" id="btn-copy-all">📋 Copy All</button>
+        </div>
+        <div class="sum-opts" id="sum-opts"></div>
       </div>
-    </div>
-    <div class="copy-all-wrap">
-      <button class="btn-copy-all" id="btn-copy-all">📋 Copy All</button>
-    </div>
-    <div class="sum-opts" id="sum-opts"></div>
-  </div>
 
-</div>
+    </div><!-- /left-col -->
+
+    <!-- RIGHT COLUMN: sticky summary on desktop -->
+    <div class="right-col" id="right-col"></div>
+
+  </div><!-- /layout -->
+</div><!-- /main -->
 
 <script>
 let options = [{ id:1, label:'', fundingAmount:10000, factorRate:1.49, termValue:36, termType:'Weeks' }];
@@ -333,7 +376,7 @@ function optText(opt,idx,f){
   const c=calcOpt(opt.fundingAmount,opt.factorRate,opt.termValue,opt.termType);
   const pl=opt.termType==='Days'?'Daily':opt.termType==='Weeks'?'Weekly':'Monthly';
   const pa=opt.termType==='Days'?c.daily:opt.termType==='Weeks'?c.weekly:c.monthly;
-  const title=opt.label?`Option ${idx+1} - ${opt.label}`:`Option ${idx+1}`;
+  const title=`Option ${idx+1}`;
   const lines=[title];
   if(f.fundingAmount) lines.push(`Funding Amount: ${fmt(opt.fundingAmount)}`);
   if(f.factorRate)    lines.push(`Factor Rate: ${opt.factorRate.toFixed(2)}`);
@@ -585,6 +628,22 @@ document.getElementById('btn-copy-all').addEventListener('click',function(){ cop
   document.getElementById('field-'+k).addEventListener('change',renderSummary);
 });
 document.getElementById('btn-add-option').addEventListener('click',addOption);
+
+// Move summary panel to right column on desktop, back to left on mobile
+function positionSummary() {
+  const panel = document.getElementById('summary-panel');
+  const rightCol = document.getElementById('right-col');
+  if (window.innerWidth >= 860) {
+    if (panel.parentElement !== rightCol) rightCol.appendChild(panel);
+  } else {
+    const leftCol = document.querySelector('.left-col');
+    const addBtn = document.getElementById('btn-add-option');
+    if (panel.parentElement !== leftCol) leftCol.appendChild(panel);
+  }
+}
+positionSummary();
+window.addEventListener('resize', positionSummary);
+
 renderAll();
 </script>
 </body>
