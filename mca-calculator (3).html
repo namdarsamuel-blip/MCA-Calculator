@@ -21,362 +21,363 @@
   --text: #0f172a;
   --sub: #64748b;
   --muted: #94a3b8;
-  --input-bg: #f1f5f9;
+  --inp: #f1f5f9;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-html { height: 100%; }
-body {
-  font-family: -apple-system, 'SF Pro Text', 'Segoe UI', system-ui, sans-serif;
-  background: var(--bg);
-  min-height: 100%;
-  color: var(--text);
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
-  padding-bottom: max(32px, env(safe-area-inset-bottom, 32px));
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  font-family:-apple-system,'SF Pro Text','Segoe UI',system-ui,sans-serif;
+  background:var(--bg);color:var(--text);
+  overflow-x:hidden;-webkit-overflow-scrolling:touch;
+  padding-bottom:max(24px,env(safe-area-inset-bottom,24px));
 }
 
 /* ── HEADER ── */
-.app-header {
-  padding: max(56px, env(safe-area-inset-top, 56px)) 20px 24px;
-  text-align: center;
+.hdr{
+  padding:max(52px,env(safe-area-inset-top,52px)) 16px 16px;
+  text-align:center;
 }
-.app-header h1 { font-size: 26px; font-weight: 700; color: var(--text); }
-.app-header p  { font-size: 14px; color: var(--sub); margin-top: 4px; }
+.hdr h1{font-size:24px;font-weight:700}
+.hdr p{font-size:13px;color:var(--sub);margin-top:3px}
 
-/* ── MAIN / LAYOUT ── */
-.main {
-  padding: 0 16px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
+/* ── PAGE SHELL ── */
+/* Mobile: everything stacks */
+.page{padding:0 12px;max-width:1400px;margin:0 auto}
 
-/* Mobile: single column */
-.layout {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-.left-col  { min-width: 0; }
-.right-col { min-width: 0; }
-
-/* Desktop: two columns */
-@media (min-width: 860px) {
-  .main { padding: 0 24px; }
-  .app-header h1 { font-size: 32px; }
-  .layout {
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 20px;
-  }
-  .left-col  { flex: 1 1 0; min-width: 0; }
-  .right-col {
-    flex: 0 0 300px;
-    width: 300px;
-    position: sticky;
-    top: 16px;
-  }
-  .right-col .sum-card { margin-bottom: 0; }
+/* ── CARD BASE ── */
+.card{
+  background:var(--card);border-radius:16px;
+  box-shadow:0 1px 6px rgba(0,0,0,.07),0 0 0 1px rgba(0,0,0,.04);
+  overflow:hidden;margin-bottom:12px;
 }
 
-/* ── CARD ── */
-.card {
-  background: var(--card); border-radius: 20px;
-  margin-bottom: 16px;
-  box-shadow: 0 1px 6px rgba(0,0,0,0.07), 0 0 0 1px rgba(0,0,0,0.04);
-  overflow: hidden;
+/* ─────────────────────────────────────────
+   MOBILE styles (base — no media query)
+───────────────────────────────────────── */
+
+/* Quick Paste */
+.qp-head{padding:14px 16px 0}
+.qp-title{font-size:16px;font-weight:600}
+.qp-sub{font-size:12px;color:var(--sub);margin-top:2px}
+.qp-body{padding:10px 16px 16px}
+.qp-ta{
+  width:100%;border:1.5px solid var(--border);border-radius:10px;
+  padding:10px 12px;font-size:15px;font-family:inherit;
+  resize:none;outline:none;color:var(--text);line-height:1.5;
+  background:var(--inp);min-height:70px;
+}
+.qp-ta:focus{border-color:var(--blue)}
+.qp-ta.err{border-color:#fca5a5}
+.parse-err{font-size:12px;color:var(--red);margin-top:5px}
+.ph{display:flex;justify-content:space-between;align-items:center;margin:12px 0 8px}
+.ph-ct{font-size:13px;color:var(--sub)}
+.btn-sa{
+  background:var(--inp);border:1px solid var(--border);border-radius:7px;
+  padding:5px 12px;font-size:13px;cursor:pointer;color:var(--text);font-family:inherit;
+}
+.pi{
+  border:2px solid var(--border);border-radius:12px;
+  padding:11px 12px;margin-bottom:7px;cursor:pointer;background:#fafafa;
+}
+.pi.sel{border-color:var(--blue);background:#f0f9ff}
+.prow{display:flex;gap:10px;align-items:flex-start}
+.pck{
+  width:20px;height:20px;border-radius:5px;flex-shrink:0;
+  border:2px solid #cbd5e1;background:white;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;color:white;margin-top:2px;
+}
+.pck.on{border-color:var(--blue);background:var(--blue)}
+.pinfo{flex:1;min-width:0}
+.pmain{font-size:14px;line-height:1.4}
+.plbl{font-weight:600}
+.pbadges{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
+.pbadge{font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px}
+.btn-ap{
+  width:100%;padding:12px;background:var(--blue);color:white;
+  border:none;border-radius:10px;cursor:pointer;
+  font-size:15px;font-weight:600;font-family:inherit;margin-top:8px;
+}
+.btn-ap:active{background:var(--blue-dark)}
+.btn-ap:disabled{background:#cbd5e1;cursor:not-allowed}
+code{background:#dbeafe;color:var(--blue-dark);padding:1px 5px;border-radius:4px;font-size:11px}
+
+/* Option card */
+.opt-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px}
+.opt-title{font-size:16px;font-weight:600}
+.btn-del{
+  background:var(--inp);border:1px solid var(--border);
+  border-radius:8px;padding:5px 9px;font-size:14px;color:var(--muted);cursor:pointer;
+}
+.btn-del:active{background:#fee2e2;color:var(--red)}
+
+.inp-sec{padding:0 16px 14px}
+.flbl{font-size:13px;color:var(--sub);display:block;margin-bottom:6px}
+.amt-box{
+  display:flex;align-items:center;gap:4px;
+  background:var(--inp);border:1.5px solid var(--border);
+  border-radius:12px;padding:10px 14px;margin-bottom:10px;
+}
+.amt-pfx{font-size:18px;color:var(--sub)}
+.amt-in{border:none;outline:none;background:transparent;font-size:20px;width:100%;font-family:inherit;color:var(--text)}
+
+.adj-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:6px}
+.btn-adj{padding:11px 0;border-radius:10px;border:none;font-size:14px;cursor:pointer;font-family:inherit}
+.btn-adj.pos{background:#dcfce7;color:var(--green)}
+.btn-adj.pos:active{background:#bbf7d0}
+.btn-adj.neg{background:#fee2e2;color:var(--red)}
+.btn-adj.neg:active{background:#fecaca}
+
+.ft-row{display:grid;grid-template-columns:1fr 1.6fr;gap:10px;margin-top:12px}
+.spn{
+  display:flex;align-items:center;
+  background:var(--inp);border:1.5px solid var(--border);
+  border-radius:10px;height:44px;overflow:hidden;
+}
+.spn-btn{
+  width:38px;height:44px;border:none;background:transparent;
+  font-size:20px;color:var(--sub);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.spn-btn:active{background:var(--border)}
+.spn-val{flex:1;text-align:center;font-size:16px;color:var(--text)}
+.trm-row{display:flex;gap:6px}
+.trm-sel{
+  flex:0 0 auto;border:1.5px solid var(--border);border-radius:10px;
+  padding:0 8px;height:44px;font-size:15px;
+  background:var(--inp);color:var(--text);font-family:inherit;outline:none;cursor:pointer;
 }
 
-/* ── OPTION HEADER ── */
-.option-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 18px 20px 16px;
-}
-.option-title { font-size: 18px; font-weight: 600; }
-.btn-delete {
-  background: var(--input-bg); border: 1px solid var(--border);
-  border-radius: 10px; padding: 8px 12px; font-size: 16px;
-  color: var(--muted); cursor: pointer; line-height: 1;
-}
-.btn-delete:active { background: #fee2e2; color: var(--red); }
+.divider{height:1px;background:var(--border)}
 
-/* ── INPUTS ── */
-.inputs-section { padding: 0 20px 20px; }
-.field-label { font-size: 14px; color: var(--sub); display: block; margin-bottom: 8px; }
+/* Overview */
+.ov-sec{padding:12px 16px 14px}
+.ov-title{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.cg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:6px}
+.c{background:var(--inp);border:1.5px solid var(--border);border-radius:10px;padding:9px 4px;text-align:center}
+.c.hl{background:var(--yellow-bg);border-color:var(--yellow-border)}
+.c-lbl{font-size:10px;color:var(--muted);margin-bottom:4px}
+.c-val{font-size:15px;font-weight:600;color:var(--text)}
+.c-val.grn{color:var(--green)}
+.c-val.red{color:var(--red)}
 
-.amount-box {
-  display: flex; align-items: center; gap: 4px;
-  background: var(--input-bg); border: 1.5px solid var(--border);
-  border-radius: 14px; padding: 13px 16px; margin-bottom: 12px;
+/* Add option */
+.btn-add{
+  width:100%;padding:13px;background:var(--card);
+  border:2px dashed #cbd5e1;border-radius:16px;
+  font-size:15px;color:var(--sub);font-family:inherit;
+  cursor:pointer;margin-bottom:12px;
 }
-.amount-prefix { font-size: 20px; color: var(--sub); line-height: 1; }
-.amount-input {
-  border: none; outline: none; background: transparent;
-  font-size: 22px; width: 100%; font-family: inherit; color: var(--text);
-}
+.btn-add:active{background:var(--inp)}
 
-.adj-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px; }
-.btn-adj {
-  padding: 13px 0; border-radius: 12px; border: none;
-  font-size: 16px; cursor: pointer; font-family: inherit;
+/* Summary */
+.sum-card{
+  background:var(--card);border-radius:16px;margin-bottom:12px;
+  box-shadow:0 1px 6px rgba(0,0,0,.07),0 0 0 1px rgba(0,0,0,.04);overflow:hidden;
 }
-.btn-adj.pos { background: #dcfce7; color: var(--green); }
-.btn-adj.pos:active { background: #bbf7d0; }
-.btn-adj.neg { background: #fee2e2; color: var(--red); }
-.btn-adj.neg:active { background: #fecaca; }
+.sum-hdr{padding:12px 14px 10px;border-bottom:1px solid var(--border)}
+.sum-title{font-size:15px;font-weight:700}
+.sum-sub{font-size:12px;color:var(--sub);margin-top:1px}
+.flds-sec{padding:10px 14px;border-bottom:1px solid var(--border)}
+.flds-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:7px}
+.flds-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px 8px}
+.flds-grid label{display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;white-space:nowrap}
+.flds-grid input[type=checkbox]{width:14px;height:14px;accent-color:var(--blue);flex-shrink:0}
+.sort-sec{padding:8px 14px 10px;border-bottom:1px solid var(--border)}
+.sort-btns{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}
+.sort-btn{
+  padding:4px 10px;border-radius:20px;border:1px solid var(--border);
+  background:var(--inp);color:var(--sub);font-size:11px;font-weight:500;
+  cursor:pointer;font-family:inherit;white-space:nowrap;
+}
+.sort-btn:active{background:var(--border)}
+.sort-btn.sort-on{background:#dbeafe;border-color:#93c5fd;color:#1d4ed8;font-weight:600}
+.tmpl-sec{padding:8px 14px 10px;border-bottom:1px solid var(--border)}
+.tmpl-sel{
+  width:100%;border:1px solid var(--border);border-radius:8px;
+  padding:7px 10px;font-size:13px;background:var(--inp);
+  color:var(--text);font-family:inherit;outline:none;cursor:pointer;
+  margin-top:4px;
+}
+.tmpl-preview{
+  margin-top:8px;padding:8px 10px;background:#f8fafc;
+  border:1px solid var(--border);border-radius:8px;
+  font-size:12px;color:var(--sub);line-height:1.6;
+}
+.ca-wrap{padding:9px 14px;border-bottom:1px solid var(--border)}
+.btn-ca{
+  width:100%;padding:9px;background:var(--inp);border:1px solid var(--border);
+  border-radius:9px;font-size:13px;color:var(--text);font-family:inherit;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;
+}
+.btn-ca:active{background:var(--border)}
+.btn-ca.cp{background:#dcfce7;border-color:#86efac;color:var(--green)}
+.sopts{padding:2px 14px 10px}
+.sopt{padding:8px 0;border-bottom:1px solid var(--border)}
+.sopt:last-child{border-bottom:none;padding-bottom:0}
+.sopt-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
+.sopt-title{font-size:13px;font-weight:600}
+.btn-co{
+  background:var(--inp);border:1px solid var(--border);
+  border-radius:6px;padding:3px 9px;font-size:12px;
+  color:var(--text);font-family:inherit;cursor:pointer;
+  display:flex;align-items:center;gap:3px;
+}
+.btn-co:active{background:var(--border)}
+.btn-co.cp{background:#dcfce7;border-color:#86efac;color:var(--green)}
+.sopt-text{font-size:12px;color:var(--sub);line-height:1.7;white-space:pre-line}
 
-.factor-term { display: grid; grid-template-columns: 1fr 1.7fr; gap: 12px; margin-top: 16px; }
+/* ─────────────────────────────────────────
+   DESKTOP (≥860px)
+   Layout: [left: paste + 2-col options] [right: sticky summary]
+───────────────────────────────────────── */
+@media(min-width:860px){
+  .hdr{padding-top:max(28px,env(safe-area-inset-top,28px));padding-bottom:12px}
+  .hdr h1{font-size:26px}
+  .page{padding:0 16px;display:grid;grid-template-columns:1fr 250px;gap:14px;align-items:start}
 
-.spinner-wrap {
-  display: flex; align-items: center;
-  background: var(--input-bg); border: 1.5px solid var(--border);
-  border-radius: 12px; height: 50px; overflow: hidden;
-}
-.spin-btn {
-  width: 44px; height: 50px; border: none; background: transparent;
-  font-size: 22px; color: var(--sub); cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-}
-.spin-btn:active { background: var(--border); }
-.spin-val { flex: 1; text-align: center; font-size: 18px; color: var(--text); }
+  /* Right col: sticky summary */
+  .right-col{position:sticky;top:12px}
+  .sum-card{margin-bottom:0}
 
-.term-row { display: flex; gap: 8px; }
-.term-select {
-  flex: 0 0 auto; border: 1.5px solid var(--border); border-radius: 12px;
-  padding: 0 10px; height: 50px; font-size: 17px;
-  background: var(--input-bg); color: var(--text);
-  font-family: inherit; outline: none; cursor: pointer;
-}
+  /* Options: 2-col grid */
+  #opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  #opts .card{margin-bottom:0}
 
-/* ── DIVIDER ── */
-.section-divider { height: 1px; background: var(--border); }
+  /* Quick paste compact */
+  .qp-head{padding:11px 14px 0}
+  .qp-title{font-size:14px}
+  .qp-body{padding:8px 14px 12px}
+  .qp-ta{font-size:13px;min-height:52px;padding:8px 10px}
+  .ph{margin:8px 0 6px}
+  .ph-ct{font-size:12px}
+  .pi{padding:8px 10px;margin-bottom:5px;border-radius:10px}
+  .pmain{font-size:13px}
+  .pbadge{font-size:10px}
+  .btn-ap{font-size:13px;padding:9px}
 
-/* ── OVERVIEW ── */
-.overview-section { padding: 18px 20px 20px; }
-.overview-title { font-size: 15px; font-weight: 600; color: var(--sub); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
-.cell-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px; }
-.cell {
-  background: var(--input-bg); border: 1.5px solid var(--border);
-  border-radius: 12px; padding: 12px 4px; text-align: center;
-}
-.cell.hl { background: var(--yellow-bg); border-color: var(--yellow-border); }
-.cell-lbl { font-size: 11px; color: var(--muted); margin-bottom: 5px; }
-.cell-val { font-size: 17px; font-weight: 600; color: var(--text); }
-.cell-val.grn { color: var(--green); }
-.cell-val.red { color: var(--red); }
+  /* Option card compact */
+  .opt-hdr{padding:10px 12px 7px}
+  .opt-title{font-size:13px}
+  .btn-del{padding:3px 7px;font-size:12px;border-radius:6px}
 
-/* ── ADD OPTION ── */
-.btn-add-option {
-  width: 100%; padding: 16px; background: var(--card);
-  border: 2px dashed #cbd5e1; border-radius: 20px;
-  font-size: 16px; color: var(--sub); font-family: inherit;
-  cursor: pointer; margin-bottom: 16px;
-}
-.btn-add-option:active { background: var(--input-bg); }
+  .inp-sec{padding:0 12px 10px}
+  .flbl{font-size:11px;margin-bottom:4px}
+  .amt-box{padding:7px 10px;margin-bottom:7px;border-radius:9px}
+  .amt-pfx{font-size:14px}
+  .amt-in{font-size:16px}
 
-/* ── QUICK PASTE ── */
-.paste-head { padding: 18px 20px 0; }
-.paste-title { font-size: 17px; font-weight: 600; }
-.paste-sub { font-size: 13px; color: var(--sub); margin-top: 3px; }
-.paste-body { padding: 12px 20px 20px; }
-.paste-ta {
-  width: 100%; border: 1.5px solid var(--border); border-radius: 14px;
-  padding: 12px 14px; font-size: 16px; font-family: inherit;
-  resize: none; outline: none; color: var(--text); line-height: 1.5;
-  background: var(--input-bg); min-height: 76px;
-}
-.paste-ta:focus { border-color: var(--blue); }
-.paste-ta.err   { border-color: #fca5a5; }
-.parse-err { font-size: 13px; color: var(--red); margin-top: 6px; }
+  .adj-row{gap:4px;margin-bottom:4px}
+  .btn-adj{padding:7px 0;font-size:12px;border-radius:7px}
 
-.parsed-hdr {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-top: 14px; margin-bottom: 10px;
-}
-.parsed-ct { font-size: 14px; color: var(--sub); }
-.btn-sel-all {
-  background: var(--input-bg); border: 1.5px solid var(--border);
-  border-radius: 8px; padding: 6px 14px; font-size: 14px;
-  cursor: pointer; color: var(--text); font-family: inherit;
-}
-.btn-sel-all:active { background: var(--border); }
+  .ft-row{gap:7px;margin-top:8px;grid-template-columns:1fr 1.3fr}
+  .spn{height:32px;border-radius:7px}
+  .spn-btn{width:28px;height:32px;font-size:16px}
+  .spn-val{font-size:13px}
+  .trm-row{gap:5px}
+  .trm-sel{height:32px;font-size:12px;padding:0 5px;border-radius:7px}
 
-.parsed-item {
-  border: 2px solid var(--border); border-radius: 14px;
-  padding: 13px 14px; margin-bottom: 8px; cursor: pointer;
-  background: #fafafa;
-}
-.parsed-item.sel { border-color: var(--blue); background: #f0f9ff; }
-.prow { display: flex; gap: 12px; align-items: flex-start; }
-.pcheck {
-  width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0;
-  border: 2px solid #cbd5e1; background: white;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 12px; color: white; margin-top: 2px;
-}
-.pcheck.on { border-color: var(--blue); background: var(--blue); }
-.pinfo { flex: 1; min-width: 0; }
-.pmain { font-size: 15px; line-height: 1.5; }
-.plbl  { font-weight: 600; }
-.pbadges { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 7px; }
-.pbadge { font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: 20px; }
+  .ov-sec{padding:9px 12px 11px}
+  .ov-title{font-size:9px;margin-bottom:6px}
+  .cg{gap:4px;margin-bottom:4px}
+  .c{padding:6px 2px;border-radius:7px}
+  .c-lbl{font-size:9px;margin-bottom:2px}
+  .c-val{font-size:13px}
 
-.btn-add-parsed {
-  width: 100%; padding: 14px; background: var(--blue); color: white;
-  border: none; border-radius: 12px; cursor: pointer;
-  font-size: 16px; font-weight: 600; font-family: inherit; margin-top: 10px;
+  .btn-add{padding:10px;font-size:13px;border-radius:12px;margin-top:10px;margin-bottom:0}
 }
-.btn-add-parsed:active { background: var(--blue-dark); }
-.btn-add-parsed:disabled { background: #cbd5e1; cursor: not-allowed; }
-
-code {
-  background: #dbeafe; color: var(--blue-dark); padding: 2px 6px;
-  border-radius: 5px; font-size: 12px; font-family: inherit;
-}
-
-/* ── SUMMARY ── */
-.sum-card {
-  background: var(--card); border-radius: 20px; margin-bottom: 16px;
-  box-shadow: 0 1px 6px rgba(0,0,0,0.07), 0 0 0 1px rgba(0,0,0,0.04);
-  overflow: hidden;
-}
-.sum-head { padding: 14px 16px 10px; border-bottom: 1px solid var(--border); }
-.sum-title { font-size: 16px; font-weight: 700; }
-.sum-sub   { font-size: 12px; color: var(--sub); margin-top: 1px; }
-
-.fields-sec { padding: 10px 16px; border-bottom: 1px solid var(--border); }
-.fields-lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 7px; }
-.fields-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px 10px; }
-.fields-grid label { display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; white-space: nowrap; }
-.fields-grid input[type=checkbox] { width: 14px; height: 14px; accent-color: var(--blue); flex-shrink: 0; }
-
-.copy-all-wrap { padding: 10px 16px; border-bottom: 1px solid var(--border); }
-.btn-copy-all {
-  width: 100%; padding: 10px; background: var(--input-bg);
-  border: 1.5px solid var(--border); border-radius: 10px;
-  font-size: 13px; color: var(--text); font-family: inherit;
-  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;
-}
-.btn-copy-all:active  { background: var(--border); }
-.btn-copy-all.copied  { background: #dcfce7; border-color: #86efac; color: var(--green); }
-
-.sum-opts { padding: 2px 16px 12px; }
-.sopt { padding: 10px 0; border-bottom: 1px solid var(--border); }
-.sopt:last-child { border-bottom: none; padding-bottom: 0; }
-.sopt-hdr { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-.sopt-title { font-size: 13px; font-weight: 600; }
-.btn-copy-one {
-  background: var(--input-bg); border: 1px solid var(--border);
-  border-radius: 6px; padding: 4px 10px; font-size: 12px;
-  color: var(--text); font-family: inherit; cursor: pointer;
-  display: flex; align-items: center; gap: 3px;
-}
-.btn-copy-one:active { background: var(--border); }
-.btn-copy-one.copied { background: #dcfce7; border-color: #86efac; color: var(--green); }
-.sopt-text { font-size: 13px; color: var(--sub); line-height: 1.7; white-space: pre-line; }
 </style>
 </head>
 <body>
 
-<div class="app-header">
+<div class="hdr">
   <h1>MCA Calculator</h1>
   <p>Compare repayments and generate summaries.</p>
 </div>
 
-<div class="main">
-  <div class="layout">
+<div class="page">
 
-    <!-- LEFT COLUMN: Quick Paste + Options -->
-    <div class="left-col">
+  <!-- LEFT COLUMN -->
+  <div class="left-col">
 
-      <!-- Quick Paste -->
-      <div class="card">
-        <div class="paste-head">
-          <div class="paste-title">⚡ Quick Paste</div>
-          <div class="paste-sub">e.g. <code>Kapitus 166k / 1.399 / 120 weeks</code></div>
-        </div>
-        <div class="paste-body">
-          <textarea class="paste-ta" id="paste-input"
-            placeholder="Kapitus 166k / 1.399 / 120 weeks&#10;Aspire 75k / 1.499 / 32 weeks"
-          ></textarea>
-          <div class="parse-err" id="parse-error" style="display:none;"></div>
-          <div id="parsed-results" style="display:none;">
-            <div class="parsed-hdr">
-              <div class="parsed-ct" id="parsed-count"></div>
-              <button class="btn-sel-all" id="btn-select-all">Deselect All</button>
-            </div>
-            <div id="parsed-list"></div>
-            <button class="btn-add-parsed" id="btn-add-parsed">+ Add Options</button>
+    <!-- Quick Paste -->
+    <div class="card">
+      <div class="qp-head">
+        <div class="qp-title">⚡ Quick Paste</div>
+        <div class="qp-sub">e.g. <code>Kapitus 166k / 1.399 / 120 weeks</code></div>
+      </div>
+      <div class="qp-body">
+        <textarea class="qp-ta" id="paste-input"
+          placeholder="Kapitus 166k / 1.399 / 120 weeks&#10;Aspire 75k / 1.499 / 32 weeks&#10;Rapid 86k / 1.499 / 60 weeks"
+        ></textarea>
+        <div class="parse-err" id="parse-error" style="display:none"></div>
+        <div id="parsed-results" style="display:none">
+          <div class="ph">
+            <span class="ph-ct" id="parsed-count"></span>
+            <button class="btn-sa" id="btn-sa">Deselect All</button>
           </div>
+          <div id="parsed-list"></div>
+          <button class="btn-ap" id="btn-ap">+ Add Options</button>
         </div>
       </div>
+    </div>
 
-      <!-- Option cards -->
-      <div id="options-container"></div>
+    <!-- Option cards -->
+    <div id="opts"></div>
 
-      <button class="btn-add-option" id="btn-add-option">+ Add Funding Option</button>
+    <button class="btn-add" id="btn-add">+ Add Funding Option</button>
 
-      <!-- Funding Summary (mobile: in left col, desktop: moves to right col via JS) -->
-      <div class="sum-card mobile-summary" id="summary-panel">
-        <div class="sum-head">
-          <div class="sum-title">Funding Summary</div>
-          <div class="sum-sub">Copy and paste offers.</div>
-        </div>
-        <div class="fields-sec">
-          <div class="fields-lbl">Displayed Fields</div>
-          <div class="fields-grid">
-            <label><input type="checkbox" id="field-fundingAmount" checked> Funding Amount</label>
-            <label><input type="checkbox" id="field-factorRate" checked> Factor Rate</label>
-            <label><input type="checkbox" id="field-termLength" checked> Term Length</label>
-            <label><input type="checkbox" id="field-payment" checked> Payment</label>
-            <label><input type="checkbox" id="field-paybackAmount" checked> Payback Amount</label>
-          </div>
-        </div>
-        <div class="copy-all-wrap">
-          <button class="btn-copy-all" id="btn-copy-all">📋 Copy All</button>
-        </div>
-        <div class="sum-opts" id="sum-opts"></div>
-      </div>
+    <!-- Summary shown here on MOBILE only -->
+    <div id="sum-mobile"></div>
 
-    </div><!-- /left-col -->
+  </div><!-- /left-col -->
 
-    <!-- RIGHT COLUMN: sticky summary on desktop -->
-    <div class="right-col" id="right-col"></div>
+  <!-- RIGHT COLUMN (desktop only) -->
+  <div class="right-col" id="sum-desktop">
+    <!-- summary injected here on desktop -->
+  </div>
 
-  </div><!-- /layout -->
-</div><!-- /main -->
+</div><!-- /page -->
 
 <script>
-let options = [{ id:1, label:'', fundingAmount:10000, factorRate:1.49, termValue:36, termType:'Weeks' }];
-let nextId = 2;
-let parsedOffers = [], selectedOffers = [];
+let options=[{id:1,label:'',fundingAmount:10000,factorRate:1.49,termValue:36,termType:'Weeks'}];
+let nextId=2, parsedOffers=[], selectedOffers=[];
+let sortBy='none'; // none | rate | cost | term | amount
 
-function toDays(v,t){ return t==='Days'?v:t==='Weeks'?v*5:v*20; }
+// Checkbox state — Factor Rate and Payback Amount off by default
+let fieldState={fundingAmount:true,factorRate:false,termLength:true,payment:true,paybackAmount:false};
+
+// Message templates
+let selectedTemplate='none';
+const TEMPLATES={
+  none:{label:'No Message',text:''},
+  gen:{label:'Approved (General)',text:`Here's a quick and clear overview of the funding program you've been approved for. It's a fast, flexible solution designed to fit your business's cash flow. If you have any questions or are ready to move forward, I'm here to guide you through the next steps.`},
+  amazing:{label:'Approved (Amazing)',text:`I just got your approval back and this is a very strong offer. The structure and pricing came back very favorable on this one.`},
+  exact:{label:'Approved (Exact)',text:`After some back and forth, I was able to get you approved for the full amount you were looking for.`},
+  short:{label:'Approved (Short)',text:`Good news, you got approved!`},
+  small:{label:'Small Approval',text:`This is a clean approval and a strong starting point. We can use this to inject capital now and keep cash flow healthy.`},
+  unsecured:{label:'Unsecured Info',text:`This is a fully unsecured business advance, meaning there's no collateral required and no hard credit check. All we need to fund your account today is:\n-A copy of your driver's license\n-A business voided check`},
+  perks:{label:'What Comes With Offer',text:`Here's what comes with your offer:\n-Early Payoff Discounts Available\n-Tax-Deductible Interest\n-Refinance Opportunities After 50% is paid off`},
+  docs:{label:'Send Docs',text:`Send me a copy of your drivers license and a business voided check and I will send the contract over with all the details for you to review and sign.`},
+};
+
+function toDays(v,t){return t==='Days'?v:t==='Weeks'?v*5:v*20}
 function calcOpt(fa,fr,tv,tt){
-  const p=Math.round(fa*fr), d=toDays(tv,tt);
-  const w=Math.round(d/5*10)/10, mo=Math.round(d/20*10)/10;
-  return {p, d, w, mo,
-    daily:  d>0?Math.round(p/d):0,
-    weekly: w>0?Math.round(p/w):0,
+  const p=Math.round(fa*fr),d=toDays(tv,tt);
+  const w=Math.round(d/5*10)/10,mo=Math.round(d/20*10)/10;
+  return{p,d,w,mo,
+    daily: d>0?Math.round(p/d):0,
+    weekly:w>0?Math.round(p/w):0,
     monthly:mo>0?Math.round(p/mo):0};
 }
-function fmt(n){ return '$'+Number(n).toLocaleString(); }
-function getOpt(id){ return options.find(o=>o.id===id); }
-function flds(){
-  return {
-    fundingAmount: document.getElementById('field-fundingAmount').checked,
-    factorRate:    document.getElementById('field-factorRate').checked,
-    termLength:    document.getElementById('field-termLength').checked,
-    payment:       document.getElementById('field-payment').checked,
-    paybackAmount: document.getElementById('field-paybackAmount').checked,
-  };
-}
+function fmt(n){return'$'+Number(n).toLocaleString()}
+function getOpt(id){return options.find(o=>o.id===id)}
+
 function optText(opt,idx,f){
   const c=calcOpt(opt.fundingAmount,opt.factorRate,opt.termValue,opt.termType);
   const pl=opt.termType==='Days'?'Daily':opt.termType==='Weeks'?'Weekly':'Monthly';
   const pa=opt.termType==='Days'?c.daily:opt.termType==='Weeks'?c.weekly:c.monthly;
-  const title=`Option ${idx+1}`;
-  const lines=[title];
+  const lines=[`Option ${idx+1}`];
   if(f.fundingAmount) lines.push(`Funding Amount: ${fmt(opt.fundingAmount)}`);
   if(f.factorRate)    lines.push(`Factor Rate: ${opt.factorRate.toFixed(2)}`);
   if(f.termLength)    lines.push(`Term Length: ${opt.termValue} ${opt.termType.toLowerCase()}`);
@@ -384,128 +385,125 @@ function optText(opt,idx,f){
   if(f.paybackAmount) lines.push(`Payback Amount: ${fmt(c.p)}`);
   return lines.join('\n');
 }
-function allText(){ const f=flds(); return options.map((o,i)=>optText(o,i,f)).join('\n\n'); }
+function allText(){
+  const base=sortedOptions().map((o,i)=>optText(o,i,fieldState)).join('\n\n');
+  const msg=TEMPLATES[selectedTemplate]?.text||'';
+  return msg?msg+'\n\n'+base:base;
+}
+function oneText(opt,idx){
+  const base=optText(opt,idx,fieldState);
+  const msg=TEMPLATES[selectedTemplate]?.text||'';
+  return msg?msg+'\n\n'+base:base;
+}
 
-function copyText(text, btn){
+function cpText(text,btn){
   navigator.clipboard.writeText(text).then(()=>{
     const orig=btn.innerHTML;
-    btn.innerHTML='✓ Copied'; btn.classList.add('copied');
-    setTimeout(()=>{ btn.innerHTML=orig; btn.classList.remove('copied'); },2000);
+    btn.innerHTML='✓ Copied';btn.classList.add('cp');
+    setTimeout(()=>{btn.innerHTML=orig;btn.classList.remove('cp')},2000);
   });
 }
 
-// Parse
+// ── Parse ──
 function parseFormula(line){
   const s=line.trim();
   const m=s.match(/(\d[\d,.]*)([kKmM]?)\s*\/\s*([\d.]+)\s*\/\s*([\d.]+)\s*(days?|weeks?|months?)/i);
-  if(!m) return null;
+  if(!m)return null;
   let amt=parseFloat(m[1].replace(/,/g,''));
   const mul=m[2].toLowerCase();
-  if(mul==='k') amt*=1000; if(mul==='m') amt*=1000000;
-  const fr=parseFloat(m[3]), tv=parseFloat(m[4]);
+  if(mul==='k')amt*=1000;if(mul==='m')amt*=1000000;
+  const fr=parseFloat(m[3]),tv=parseFloat(m[4]);
   const tt=m[5].toLowerCase().startsWith('week')?'Weeks':m[5].toLowerCase().startsWith('month')?'Months':'Days';
   const lm=s.match(/^([a-zA-Z][a-zA-Z\s]*?)(?=\s*[\d])/);
   const label=lm?lm[1].trim():'';
-  if(isNaN(amt)||isNaN(fr)||isNaN(tv)) return null;
-  return {label,fundingAmount:amt,factorRate:fr,termValue:tv,termType:tt};
+  if(isNaN(amt)||isNaN(fr)||isNaN(tv))return null;
+  return{label,fundingAmount:amt,factorRate:fr,termValue:tv,termType:tt};
 }
-
 function getBadges(p,all){
-  const badges=[];
+  const b=[];
   const d=toDays(p.termValue,p.termType);
   const allD=all.map(x=>toDays(x.termValue,x.termType));
-  if(p.fundingAmount===Math.max(...all.map(x=>x.fundingAmount)))
-    badges.push({l:'💰 Highest Amount',c:'#1d4ed8',bg:'#dbeafe'});
-  if(p.factorRate===Math.min(...all.map(x=>x.factorRate)))
-    badges.push({l:'📉 Lowest Rate',c:'#15803d',bg:'#dcfce7'});
-  if(d===Math.max(...allD))
-    badges.push({l:'📅 Longest Term',c:'#7c3aed',bg:'#ede9fe'});
-  if(p.fundingAmount*p.factorRate===Math.min(...all.map(x=>x.fundingAmount*x.factorRate)))
-    badges.push({l:'✅ Lowest Payback',c:'#b45309',bg:'#fef3c7'});
-  if((p.fundingAmount*p.factorRate-p.fundingAmount)===Math.min(...all.map(x=>x.fundingAmount*x.factorRate-x.fundingAmount)))
-    badges.push({l:'💡 Lowest Cost',c:'#0f766e',bg:'#ccfbf1'});
-  return badges;
+  if(p.fundingAmount===Math.max(...all.map(x=>x.fundingAmount)))b.push({l:'💰 Highest Amount',c:'#1d4ed8',bg:'#dbeafe'});
+  if(p.factorRate===Math.min(...all.map(x=>x.factorRate)))b.push({l:'📉 Lowest Rate',c:'#15803d',bg:'#dcfce7'});
+  if(d===Math.max(...allD))b.push({l:'📅 Longest Term',c:'#7c3aed',bg:'#ede9fe'});
+  if(p.fundingAmount*p.factorRate===Math.min(...all.map(x=>x.fundingAmount*x.factorRate)))b.push({l:'✅ Lowest Payback',c:'#b45309',bg:'#fef3c7'});
+  if((p.fundingAmount*p.factorRate-p.fundingAmount)===Math.min(...all.map(x=>x.fundingAmount*x.factorRate-x.fundingAmount)))b.push({l:'💡 Lowest Cost',c:'#0f766e',bg:'#ccfbf1'});
+  return b;
 }
 
-// Render option card
-function renderOptionCard(opt, idx){
+// ── Render option card ──
+function renderCard(opt,idx){
   const c=calcOpt(opt.fundingAmount,opt.factorRate,opt.termValue,opt.termType);
   const hl=opt.termType==='Days'?'days':opt.termType==='Weeks'?'weeks':'months';
-  const del=options.length>1?`<button class="btn-delete" onclick="deleteOption(${opt.id})">🗑</button>`:'';
-
+  const del=options.length>1?`<button class="btn-del" onclick="delOpt(${opt.id})">🗑</button>`:'';
   function cell(lbl,val,cls,h){
-    return `<div class="cell${h?' hl':''}">
-      <div class="cell-lbl">${lbl}</div>
-      <div class="cell-val${cls?' '+cls:''}">${val}</div>
-    </div>`;
+    return`<div class="c${h?' hl':''}"><div class="c-lbl">${lbl}</div><div class="c-val${cls?' '+cls:''}">${val}</div></div>`;
   }
-
-  return `
-  <div class="card" id="option-card-${opt.id}">
-    <div class="option-header">
-      <span class="option-title">Option ${idx+1}${opt.label?' — '+opt.label:''}</span>
+  return`<div class="card" id="oc-${opt.id}">
+    <div class="opt-hdr">
+      <span class="opt-title">Option ${idx+1}${opt.label?' — '+opt.label:''}</span>
       ${del}
     </div>
-    <div class="inputs-section">
-      <label class="field-label">Funding Amount</label>
-      <div class="amount-box">
-        <span class="amount-prefix">$</span>
-        <input class="amount-input" type="text" id="amt-${opt.id}"
+    <div class="inp-sec">
+      <label class="flbl">Funding Amount</label>
+      <div class="amt-box">
+        <span class="amt-pfx">$</span>
+        <input class="amt-in" type="text" id="ai-${opt.id}"
           value="${Number(opt.fundingAmount).toLocaleString()}"
           onfocus="this.value='${opt.fundingAmount}';this.type='number';"
-          onblur="updateAmount(${opt.id},this.value);this.type='text';this.value=Number(this.value||0).toLocaleString();"
-          onchange="updateAmount(${opt.id},this.value)">
+          onblur="updAmt(${opt.id},this.value);this.type='text';this.value=Number(this.value||0).toLocaleString();"
+          onchange="updAmt(${opt.id},this.value)">
       </div>
       <div class="adj-row">
-        <button class="btn-adj pos" onclick="adjustAmount(${opt.id},100)">+100</button>
-        <button class="btn-adj pos" onclick="adjustAmount(${opt.id},1000)">+1k</button>
-        <button class="btn-adj pos" onclick="adjustAmount(${opt.id},10000)">+10k</button>
+        <button class="btn-adj pos" onclick="adjAmt(${opt.id},100)">+100</button>
+        <button class="btn-adj pos" onclick="adjAmt(${opt.id},1000)">+1k</button>
+        <button class="btn-adj pos" onclick="adjAmt(${opt.id},10000)">+10k</button>
       </div>
       <div class="adj-row" style="margin-bottom:0">
-        <button class="btn-adj neg" onclick="adjustAmount(${opt.id},-100)">-100</button>
-        <button class="btn-adj neg" onclick="adjustAmount(${opt.id},-1000)">-1k</button>
-        <button class="btn-adj neg" onclick="adjustAmount(${opt.id},-10000)">-10k</button>
+        <button class="btn-adj neg" onclick="adjAmt(${opt.id},-100)">-100</button>
+        <button class="btn-adj neg" onclick="adjAmt(${opt.id},-1000)">-1k</button>
+        <button class="btn-adj neg" onclick="adjAmt(${opt.id},-10000)">-10k</button>
       </div>
-      <div class="factor-term">
+      <div class="ft-row">
         <div>
-          <label class="field-label" style="margin-top:16px">Factor Rate</label>
-          <div class="spinner-wrap">
-            <button class="spin-btn" onclick="adjustFactor(${opt.id},-0.01)">−</button>
-            <span class="spin-val">${opt.factorRate.toFixed(2)}</span>
-            <button class="spin-btn" onclick="adjustFactor(${opt.id},0.01)">+</button>
+          <label class="flbl" style="margin-top:10px">Factor Rate</label>
+          <div class="spn">
+            <button class="spn-btn" onclick="adjFr(${opt.id},-0.01)">−</button>
+            <span class="spn-val">${opt.factorRate.toFixed(2)}</span>
+            <button class="spn-btn" onclick="adjFr(${opt.id},0.01)">+</button>
           </div>
         </div>
         <div>
-          <label class="field-label" style="margin-top:16px">Term</label>
-          <div class="term-row">
-            <select class="term-select" onchange="updateTermType(${opt.id},this.value)">
+          <label class="flbl" style="margin-top:10px">Term</label>
+          <div class="trm-row">
+            <select class="trm-sel" onchange="updTt(${opt.id},this.value)">
               <option ${opt.termType==='Days'?'selected':''}>Days</option>
               <option ${opt.termType==='Weeks'?'selected':''}>Weeks</option>
               <option ${opt.termType==='Months'?'selected':''}>Months</option>
             </select>
-            <div class="spinner-wrap" style="flex:1">
-              <button class="spin-btn" onclick="adjustTerm(${opt.id},-1)">−</button>
-              <span class="spin-val">${opt.termValue}</span>
-              <button class="spin-btn" onclick="adjustTerm(${opt.id},1)">+</button>
+            <div class="spn" style="flex:1">
+              <button class="spn-btn" onclick="adjTv(${opt.id},-1)">−</button>
+              <span class="spn-val">${opt.termValue}</span>
+              <button class="spn-btn" onclick="adjTv(${opt.id},1)">+</button>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="section-divider"></div>
-    <div class="overview-section">
-      <div class="overview-title">Repayment Overview</div>
-      <div class="cell-grid">
-        ${cell('Funding Amount',fmt(opt.fundingAmount),'grn',false)}
+    <div class="divider"></div>
+    <div class="ov-sec">
+      <div class="ov-title">Repayment Overview</div>
+      <div class="cg">
+        ${cell('Funding',fmt(opt.fundingAmount),'grn',false)}
         ${cell('Factor Rate',opt.factorRate.toFixed(2),'',false)}
-        ${cell('Payback Amount',fmt(c.p),'red',false)}
+        ${cell('Payback',fmt(c.p),'red',false)}
       </div>
-      <div class="cell-grid">
+      <div class="cg">
         ${cell('Days',c.d,'',hl==='days')}
         ${cell('Weeks',c.w,'',hl==='weeks')}
         ${cell('Months',c.mo,'',hl==='months')}
       </div>
-      <div class="cell-grid">
+      <div class="cg">
         ${cell('Daily',fmt(c.daily),'',hl==='days')}
         ${cell('Weekly',fmt(c.weekly),'',hl==='weeks')}
         ${cell('Monthly',fmt(c.monthly),'',hl==='months')}
@@ -514,9 +512,11 @@ function renderOptionCard(opt, idx){
   </div>`;
 }
 
-function renderSummary(){
-  const f=flds();
-  document.getElementById('sum-opts').innerHTML=options.map((opt,i)=>{
+// ── Summary HTML ──
+function summaryHTML(){
+  const f=fieldState;
+  const sorted=sortedOptions();
+  const opts=sorted.map((opt,i)=>{
     const c=calcOpt(opt.fundingAmount,opt.factorRate,opt.termValue,opt.termType);
     const pl=opt.termType==='Days'?'Daily':opt.termType==='Weeks'?'Weekly':'Monthly';
     const pa=opt.termType==='Days'?c.daily:opt.termType==='Weeks'?c.weekly:c.monthly;
@@ -527,56 +527,121 @@ function renderSummary(){
     if(f.payment)       lines.push(`${pl} Payments: ${fmt(pa)}`);
     if(f.paybackAmount) lines.push(`Payback Amount: ${fmt(c.p)}`);
     const title=opt.label?`Option ${i+1} — ${opt.label}`:`Option ${i+1}`;
-    return `<div class="sopt">
+    return`<div class="sopt">
       <div class="sopt-hdr">
         <span class="sopt-title">${title}</span>
-        <button class="btn-copy-one" id="cpy-${opt.id}" onclick="copyOne(${opt.id},${i})">📋 Copy</button>
+        <button class="btn-co" onclick="cpOne(${opt.id},${i})">📋 Copy</button>
       </div>
       <div class="sopt-text">${lines.join('\n')}</div>
     </div>`;
   }).join('');
+
+  const tmplOptions=Object.entries(TEMPLATES).map(([k,v])=>`<option value="${k}" ${selectedTemplate===k?'selected':''}>${v.label}</option>`).join('');
+  const tmplPreview=TEMPLATES[selectedTemplate]?.text||'';
+
+  const sortBtns=[
+    {k:'none',  l:'Default'},
+    {k:'rate',  l:'📉 Lowest Rate'},
+    {k:'term',  l:'📅 Longest Term'},
+    {k:'amount',l:'💰 Highest Amount'},
+  ].map(({k,l})=>`<button class="sort-btn${sortBy===k?' sort-on':''}" onclick="setSort('${k}')">${l}</button>`).join('');
+
+  return`<div class="sum-card">
+    <div class="sum-hdr">
+      <div class="sum-title">Funding Summary</div>
+      <div class="sum-sub">Copy and paste offers.</div>
+    </div>
+    <div class="flds-sec">
+      <div class="flds-lbl">Displayed Fields</div>
+      <div class="flds-grid">
+        <label><input type="checkbox" onchange="toggleField('fundingAmount',this.checked)" ${f.fundingAmount?'checked':''}> Funding Amount</label>
+        <label><input type="checkbox" onchange="toggleField('factorRate',this.checked)" ${f.factorRate?'checked':''}> Factor Rate</label>
+        <label><input type="checkbox" onchange="toggleField('termLength',this.checked)" ${f.termLength?'checked':''}> Term Length</label>
+        <label><input type="checkbox" onchange="toggleField('payment',this.checked)" ${f.payment?'checked':''}> Payment</label>
+        <label><input type="checkbox" onchange="toggleField('paybackAmount',this.checked)" ${f.paybackAmount?'checked':''}> Payback Amount</label>
+      </div>
+    </div>
+    <div class="sort-sec">
+      <div class="flds-lbl">Sort By</div>
+      <div class="sort-btns">${sortBtns}</div>
+    </div>
+    <div class="tmpl-sec">
+      <div class="flds-lbl">Message Template</div>
+      <select class="tmpl-sel" onchange="setTemplate(this.value)">${tmplOptions}</select>
+      ${tmplPreview?`<div class="tmpl-preview">${tmplPreview.replace(/\n/g,'<br>')}</div>`:''}
+    </div>
+    <div class="ca-wrap">
+      <button class="btn-ca" onclick="doCopyAll(this)">📋 Copy All</button>
+    </div>
+    <div class="sopts">${opts}</div>
+  </div>`;
+}
+
+// ── Place summary in correct container ──
+function placeSummary(){
+  const desktop=window.innerWidth>=860;
+  const html=summaryHTML();
+  document.getElementById('sum-desktop').innerHTML=desktop?html:'';
+  document.getElementById('sum-mobile').innerHTML=desktop?'':html;
+}
+
+function sortedOptions(){
+  if(sortBy==='none') return [...options];
+  const copy=[...options];
+  copy.sort((a,b)=>{
+    if(sortBy==='rate')   return a.factorRate - b.factorRate;
+    if(sortBy==='cost')   return (a.fundingAmount*a.factorRate-a.fundingAmount)-(b.fundingAmount*b.factorRate-b.fundingAmount);
+    if(sortBy==='term')   return toDays(b.termValue,b.termType)-toDays(a.termValue,a.termType);
+    if(sortBy==='amount') return b.fundingAmount-a.fundingAmount;
+    return 0;
+  });
+  return copy;
 }
 
 function renderAll(){
-  document.getElementById('options-container').innerHTML=options.map((o,i)=>renderOptionCard(o,i)).join('');
-  renderSummary();
+  const sorted=sortedOptions();
+  document.getElementById('opts').innerHTML=sorted.map((o,i)=>renderCard(o,i)).join('');
+  placeSummary();
 }
 
-function updateAmount(id,val){ getOpt(id).fundingAmount=Math.max(0,Number(val)||0); renderAll(); }
-function adjustAmount(id,d){   getOpt(id).fundingAmount=Math.max(0,getOpt(id).fundingAmount+d); renderAll(); }
-function adjustFactor(id,d){   getOpt(id).factorRate=Math.max(1,Math.round((getOpt(id).factorRate+d)*100)/100); renderAll(); }
-function updateTermType(id,v){ getOpt(id).termType=v; renderAll(); }
-function adjustTerm(id,d){     getOpt(id).termValue=Math.max(1,getOpt(id).termValue+d); renderAll(); }
-function deleteOption(id){     options=options.filter(o=>o.id!==id); renderAll(); }
-function addOption(){          options.push({id:nextId++,label:'',fundingAmount:10000,factorRate:1.49,termValue:36,termType:'Weeks'}); renderAll(); }
-
-function copyOne(id,idx){
-  copyText(optText(getOpt(id),idx,flds()), document.getElementById(`cpy-${id}`));
+// ── Mutations ──
+function updAmt(id,v){getOpt(id).fundingAmount=Math.max(0,Number(v)||0);renderAll()}
+function adjAmt(id,d){getOpt(id).fundingAmount=Math.max(0,getOpt(id).fundingAmount+d);renderAll()}
+function adjFr(id,d){getOpt(id).factorRate=Math.max(1,Math.round((getOpt(id).factorRate+d)*100)/100);renderAll()}
+function updTt(id,v){getOpt(id).termType=v;renderAll()}
+function adjTv(id,d){getOpt(id).termValue=Math.max(1,getOpt(id).termValue+d);renderAll()}
+function delOpt(id){options=options.filter(o=>o.id!==id);renderAll()}
+function toggleField(k,v){fieldState[k]=v;placeSummary()}
+function setTemplate(v){selectedTemplate=v;placeSummary()}
+function setSort(v){sortBy=v;renderAll()}
+function doCopyAll(btn){cpText(allText(),btn)}
+function cpOne(id,idx){
+  const sorted=sortedOptions();
+  const realIdx=sorted.findIndex(o=>o.id===id);
+  cpText(oneText(getOpt(id),realIdx>=0?realIdx:idx),document.body);
 }
-document.getElementById('btn-copy-all').addEventListener('click',function(){ copyText(allText(),this); });
-
-// Quick Paste
+// ── Quick Paste ──
 (function(){
   const ta=document.getElementById('paste-input');
   const errEl=document.getElementById('parse-error');
   const resEl=document.getElementById('parsed-results');
   const listEl=document.getElementById('parsed-list');
   const cntEl=document.getElementById('parsed-count');
-  const addBtn=document.getElementById('btn-add-parsed');
-  const selBtn=document.getElementById('btn-select-all');
+  const addBtn=document.getElementById('btn-ap');
+  const selBtn=document.getElementById('btn-sa');
 
   ta.addEventListener('input',()=>{
     const val=ta.value.trim();
-    errEl.style.display='none'; ta.classList.remove('err');
-    if(!val){ resEl.style.display='none'; parsedOffers=[]; selectedOffers=[]; return; }
+    errEl.style.display='none';ta.classList.remove('err');
+    if(!val){resEl.style.display='none';parsedOffers=[];selectedOffers=[];return}
     const lines=val.split('\n').filter(l=>l.trim());
     parsedOffers=lines.map(parseFormula).filter(Boolean);
     selectedOffers=parsedOffers.map((_,i)=>i);
     if(lines.length>0&&parsedOffers.length===0){
       errEl.textContent="Couldn't parse. Try: Kapitus 166k / 1.399 / 120 weeks";
-      errEl.style.display='block'; ta.classList.add('err'); resEl.style.display='none'; return;
+      errEl.style.display='block';ta.classList.add('err');resEl.style.display='none';return;
     }
-    renderParsed(); resEl.style.display='block';
+    renderParsed();resEl.style.display='block';
   });
 
   selBtn.addEventListener('click',()=>{
@@ -586,11 +651,10 @@ document.getElementById('btn-copy-all').addEventListener('click',function(){ cop
 
   addBtn.addEventListener('click',()=>{
     const toAdd=parsedOffers.filter((_,i)=>selectedOffers.includes(i));
-    // If only the default blank option exists, replace it so pasted items start at Option 1
     const isDefault=options.length===1&&options[0].label===''&&options[0].fundingAmount===10000&&options[0].factorRate===1.49;
-    if(isDefault) options=[];
+    if(isDefault)options=[];
     toAdd.forEach(p=>options.push({id:nextId++,label:p.label,fundingAmount:p.fundingAmount,factorRate:p.factorRate,termValue:p.termValue,termType:p.termType}));
-    ta.value=''; parsedOffers=[]; selectedOffers=[]; resEl.style.display='none';
+    ta.value='';parsedOffers=[];selectedOffers=[];resEl.style.display='none';
     renderAll();
   });
 
@@ -605,44 +669,30 @@ document.getElementById('btn-copy-all').addEventListener('click',function(){ cop
       const payback=Math.round(p.fundingAmount*p.factorRate);
       const cost=payback-p.fundingAmount;
       const badges=getBadges(p,parsedOffers);
-      return `<div class="parsed-item${isSel?' sel':''}" onclick="toggleOffer(${i})">
+      return`<div class="pi${isSel?' sel':''}" onclick="toggleOffer(${i})">
         <div class="prow">
-          <div class="pcheck${isSel?' on':''}">${isSel?'✓':''}</div>
+          <div class="pck${isSel?' on':''}">${isSel?'✓':''}</div>
           <div class="pinfo">
-            <div class="pmain">${p.label?`<span class="plbl">${p.label}</span> `:''}${fmt(p.fundingAmount)} × ${p.factorRate} · ${p.termValue} ${p.termType}<br><span style="color:var(--sub)">→ payback <strong style="color:var(--text)">${fmt(payback)}</strong> <span style="font-size:13px;color:var(--muted)">(cost: ${fmt(cost)})</span></span></div>
+            <div class="pmain">${p.label?`<span class="plbl">${p.label}</span> `:''}${fmt(p.fundingAmount)} × ${p.factorRate} · ${p.termValue} ${p.termType}<br>
+            <span style="color:var(--sub)">→ payback <strong style="color:var(--text)">${fmt(payback)}</strong> <span style="font-size:12px;color:var(--muted)">(cost: ${fmt(cost)})</span></span></div>
             ${badges.length?`<div class="pbadges">${badges.map(b=>`<span class="pbadge" style="background:${b.bg};color:${b.c}">${b.l}</span>`).join('')}</div>`:''}
           </div>
         </div>
       </div>`;
     }).join('');
   }
-
   window.toggleOffer=function(i){
     selectedOffers=selectedOffers.includes(i)?selectedOffers.filter(x=>x!==i):[...selectedOffers,i];
     renderParsed();
   };
 })();
 
-['fundingAmount','factorRate','termLength','payment','paybackAmount'].forEach(k=>{
-  document.getElementById('field-'+k).addEventListener('change',renderSummary);
+document.getElementById('btn-add').addEventListener('click',()=>{
+  options.push({id:nextId++,label:'',fundingAmount:10000,factorRate:1.49,termValue:36,termType:'Weeks'});
+  renderAll();
 });
-document.getElementById('btn-add-option').addEventListener('click',addOption);
 
-// Move summary panel to right column on desktop, back to left on mobile
-function positionSummary() {
-  const panel = document.getElementById('summary-panel');
-  const rightCol = document.getElementById('right-col');
-  if (window.innerWidth >= 860) {
-    if (panel.parentElement !== rightCol) rightCol.appendChild(panel);
-  } else {
-    const leftCol = document.querySelector('.left-col');
-    const addBtn = document.getElementById('btn-add-option');
-    if (panel.parentElement !== leftCol) leftCol.appendChild(panel);
-  }
-}
-positionSummary();
-window.addEventListener('resize', positionSummary);
-
+window.addEventListener('resize',renderAll);
 renderAll();
 </script>
 </body>
