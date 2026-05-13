@@ -29,7 +29,7 @@ body{
   font-family:-apple-system,'SF Pro Text','Segoe UI',system-ui,sans-serif;
   background:var(--bg);color:var(--text);
   overflow-x:hidden;-webkit-overflow-scrolling:touch;
-  padding-bottom:max(24px,env(safe-area-inset-bottom,24px));
+  padding-bottom:max(48px,env(safe-area-inset-bottom,48px));
 }
 
 /* ── HEADER ── */
@@ -161,14 +161,22 @@ code{background:#dbeafe;color:var(--blue-dark);padding:1px 5px;border-radius:4px
 .c-val.grn{color:var(--green)}
 .c-val.red{color:var(--red)}
 
-/* Add option */
+/* Add + Undo row */
+.add-row{display:flex;gap:8px;margin-bottom:12px}
 .btn-add{
-  width:100%;padding:13px;background:var(--card);
+  flex:1;padding:13px;background:var(--card);
   border:2px dashed #cbd5e1;border-radius:16px;
   font-size:15px;color:var(--sub);font-family:inherit;
-  cursor:pointer;margin-bottom:12px;
+  cursor:pointer;
 }
 .btn-add:active{background:var(--inp)}
+.btn-undo{
+  flex-shrink:0;padding:13px 16px;background:var(--card);
+  border:2px solid #e2e8f0;border-radius:16px;
+  font-size:14px;color:var(--sub);font-family:inherit;
+  cursor:pointer;white-space:nowrap;
+}
+.btn-undo:active{background:#fef9c3;border-color:#fbbf24;color:#92400e}
 
 /* Summary */
 .sum-card{
@@ -183,7 +191,7 @@ code{background:#dbeafe;color:var(--blue-dark);padding:1px 5px;border-radius:4px
 .flds-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px 8px}
 .flds-grid label{display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;white-space:nowrap}
 .flds-grid input[type=checkbox]{width:14px;height:14px;accent-color:var(--blue);flex-shrink:0}
-.sort-sec{padding:8px 14px 10px;border-bottom:1px solid var(--border)}
+.sort-sec{padding:8px 14px 14px;border-bottom:1px solid var(--border)}
 .sort-btns{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}
 .sort-btn{
   padding:4px 10px;border-radius:20px;border:1px solid var(--border);
@@ -192,7 +200,9 @@ code{background:#dbeafe;color:var(--blue-dark);padding:1px 5px;border-radius:4px
 }
 .sort-btn:active{background:var(--border)}
 .sort-btn.sort-on{background:#dbeafe;border-color:#93c5fd;color:#1d4ed8;font-weight:600}
-.tmpl-sec{padding:8px 14px 10px;border-bottom:1px solid var(--border)}
+.flds-lbl-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+.flds-lbl-row .flds-lbl{margin-bottom:0}
+.tmpl-sec{padding:8px 14px 14px;border-bottom:1px solid var(--border)}
 .tmpl-sel{
   width:100%;border:1px solid var(--border);border-radius:8px;
   padding:7px 10px;font-size:13px;background:var(--inp);
@@ -200,11 +210,19 @@ code{background:#dbeafe;color:var(--blue-dark);padding:1px 5px;border-radius:4px
   margin-top:4px;
 }
 .tmpl-preview{
-  margin-top:8px;padding:8px 10px;background:#f8fafc;
+  margin-top:8px;background:#f8fafc;
   border:1px solid var(--border);border-radius:8px;
+  overflow:hidden;
+}
+.tmpl-preview-hdr{
+  display:flex;justify-content:flex-end;
+  padding:6px 8px 0;
+}
+.tmpl-preview-text{
+  padding:2px 10px 10px;
   font-size:12px;color:var(--sub);line-height:1.6;
 }
-.ca-wrap{padding:9px 14px;border-bottom:1px solid var(--border)}
+.ca-wrap{padding:9px 14px 10px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:6px}
 .btn-ca{
   width:100%;padding:9px;background:var(--inp);border:1px solid var(--border);
   border-radius:9px;font-size:13px;color:var(--text);font-family:inherit;
@@ -212,6 +230,18 @@ code{background:#dbeafe;color:var(--blue-dark);padding:1px 5px;border-radius:4px
 }
 .btn-ca:active{background:var(--border)}
 .btn-ca.cp{background:#dcfce7;border-color:#86efac;color:var(--green)}
+.btn-ca-primary{background:#0ea5e9;color:white;border-color:#0284c7;font-weight:600}
+.btn-ca-primary:active{background:#0284c7}
+.btn-ca-primary.cp{background:#dcfce7;border-color:#86efac;color:var(--green)}
+.btn-ca-sec{background:var(--inp)}
+.btn-ca-msg{
+  width:100%;margin-top:7px;padding:7px;background:var(--inp);
+  border:1px solid var(--border);border-radius:8px;
+  font-size:12px;color:var(--sub);font-family:inherit;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;
+}
+.btn-ca-msg:active{background:var(--border)}
+.btn-ca-msg.cp{background:#dcfce7;border-color:#86efac;color:var(--green)}
 .sopts{padding:2px 14px 10px}
 .sopt{padding:8px 0;border-bottom:1px solid var(--border)}
 .sopt:last-child{border-bottom:none;padding-bottom:0}
@@ -284,7 +314,9 @@ code{background:#dbeafe;color:var(--blue-dark);padding:1px 5px;border-radius:4px
   .c-lbl{font-size:9px;margin-bottom:2px}
   .c-val{font-size:13px}
 
-  .btn-add{padding:10px;font-size:13px;border-radius:12px;margin-top:10px;margin-bottom:0}
+  .btn-add{padding:10px;font-size:13px;border-radius:12px}
+  .btn-undo{padding:10px 13px;font-size:13px;border-radius:12px}
+  .add-row{margin-top:10px;margin-bottom:0}
 }
 </style>
 </head>
@@ -325,7 +357,10 @@ code{background:#dbeafe;color:var(--blue-dark);padding:1px 5px;border-radius:4px
     <!-- Option cards -->
     <div id="opts"></div>
 
-    <button class="btn-add" id="btn-add">+ Add Funding Option</button>
+    <div class="add-row">
+      <button class="btn-add" id="btn-add">+ Add Funding Option</button>
+      <button class="btn-undo" id="btn-undo" onclick="undoDelete()" title="Undo last delete">↩ Undo</button>
+    </div>
 
     <!-- Summary shown here on MOBILE only -->
     <div id="sum-mobile"></div>
@@ -565,10 +600,16 @@ function summaryHTML(){
       <div class="flds-lbl">Sort By</div>
       <div class="sort-btns">${sortBtns}</div>
     </div>
+    ${selectedTemplate!=='none'?`<div class="ca-wrap"><button class="btn-ca btn-ca-primary" onclick="doCopyAll(this)">📋 Copy All + Message</button></div>`:''}
     <div class="tmpl-sec">
       <div class="flds-lbl">Message Template</div>
       <select class="tmpl-sel" onchange="setTemplate(this.value)">${tmplOptions}</select>
-      ${tmplPreview?`<div class="tmpl-preview">${tmplPreview.replace(/\n/g,'<br>')}</div>`:''}
+      ${tmplPreview?`<div class="tmpl-preview">
+        <div class="tmpl-preview-hdr">
+          <button class="btn-co" onclick="doCopyMsg(this)">📋 Copy</button>
+        </div>
+        <div class="tmpl-preview-text">${tmplPreview.replace(/\n/g,'<br>')}</div>
+      </div>`:''}
     </div>
     <div class="ca-wrap">
       <button class="btn-ca" onclick="doCopyAll(this)">📋 Copy All</button>
@@ -610,11 +651,33 @@ function adjAmt(id,d){getOpt(id).fundingAmount=Math.max(0,getOpt(id).fundingAmou
 function adjFr(id,d){getOpt(id).factorRate=Math.max(1,Math.round((getOpt(id).factorRate+d)*100)/100);renderAll()}
 function updTt(id,v){getOpt(id).termType=v;renderAll()}
 function adjTv(id,d){getOpt(id).termValue=Math.max(1,getOpt(id).termValue+d);renderAll()}
-function delOpt(id){options=options.filter(o=>o.id!==id);renderAll()}
+let deletedStack=[]; // undo history
+
+function delOpt(id){
+  const opt=options.find(o=>o.id===id);
+  const idx=options.indexOf(opt);
+  if(opt) deletedStack.push({opt:{...opt},idx});
+  options=options.filter(o=>o.id!==id);
+  renderAll();
+}
+function undoDelete(){
+  if(!deletedStack.length) return;
+  const {opt,idx}=deletedStack.pop();
+  options.splice(idx,0,opt);
+  renderAll();
+}
 function toggleField(k,v){fieldState[k]=v;placeSummary()}
 function setTemplate(v){selectedTemplate=v;placeSummary()}
 function setSort(v){sortBy=v;renderAll()}
 function doCopyAll(btn){cpText(allText(),btn)}
+function doCopyAllNoMsg(btn){
+  const base=sortedOptions().map((o,i)=>optText(o,i,fieldState)).join('\n\n');
+  cpText(base,btn);
+}
+function doCopyMsg(btn){
+  const msg=TEMPLATES[selectedTemplate]?.text||'';
+  if(msg) cpText(msg,btn);
+}
 function cpOne(id,idx){
   const sorted=sortedOptions();
   const realIdx=sorted.findIndex(o=>o.id===id);
