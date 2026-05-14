@@ -141,11 +141,52 @@ code{background:#dbeafe;color:var(--blue-dark);padding:1px 5px;border-radius:4px
 }
 .spn-btn:active{background:var(--border)}
 .spn-val{flex:1;text-align:center;font-size:16px;color:var(--text)}
+.spn-in{
+  flex:1;text-align:center;font-size:16px;color:var(--text);
+  border:none;outline:none;background:transparent;
+  font-family:inherit;width:0;min-width:0;padding:0;
+  -moz-appearance:textfield;
+}
+.spn-in::-webkit-outer-spin-button,
+.spn-in::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 .trm-row{display:flex;gap:6px}
 .trm-sel{
   flex:0 0 auto;border:1.5px solid var(--border);border-radius:10px;
   padding:0 8px;height:44px;font-size:15px;
   background:var(--inp);color:var(--text);font-family:inherit;outline:none;cursor:pointer;
+}
+
+/* Mobile slider — hidden on desktop */
+.mob-slider{display:none}
+@media(max-width:859px){
+  .mob-slider{
+    display:block;width:100%;margin-top:10px;
+    -webkit-appearance:none;appearance:none;
+    height:6px;border-radius:3px;
+    background:linear-gradient(to right,var(--blue) 0%,var(--blue) 50%,var(--border) 50%,var(--border) 100%);
+    outline:none;cursor:pointer;
+  }
+  .mob-slider::-webkit-slider-thumb{
+    -webkit-appearance:none;appearance:none;
+    width:28px;height:28px;border-radius:50%;
+    background:white;border:2px solid var(--blue);
+    box-shadow:0 1px 4px rgba(0,0,0,0.2);
+    cursor:pointer;
+  }
+  .mob-slider::-moz-range-thumb{
+    width:28px;height:28px;border-radius:50%;
+    background:white;border:2px solid var(--blue);
+    box-shadow:0 1px 4px rgba(0,0,0,0.2);
+    cursor:pointer;
+  }
+  .ft-row{grid-template-columns:1fr;gap:12px}
+  .trm-row{gap:8px}
+  .trm-sel{height:54px;font-size:17px;padding:0 12px;border-radius:12px;flex:0 0 110px}
+  .spn{height:54px;border-radius:12px}
+  .spn-btn{width:54px;height:54px;font-size:26px;background:var(--inp)}
+  .spn-btn:active{background:#dde3ec}
+  .spn-val{font-size:20px;font-weight:500}
+  .ft-row .spn:first-of-type .spn-btn{width:54px;height:54px;font-size:26px}
 }
 
 .divider{height:1px;background:var(--border)}
@@ -499,6 +540,11 @@ function renderCard(opt,idx){
         <button class="btn-adj neg" onclick="adjAmt(${opt.id},-1000)">-1k</button>
         <button class="btn-adj neg" onclick="adjAmt(${opt.id},-10000)">-10k</button>
       </div>
+      <input class="mob-slider" type="range" min="1000" max="5000000" step="5000"
+        data-slider="amt"
+        value="${Math.min(5000000,Math.max(1000,opt.fundingAmount))}"
+        oninput="sliderInput(this)"
+        onchange="updAmt(${opt.id},this.value)">
       <div class="ft-row">
         <div>
           <label class="flbl" style="margin-top:10px">Factor Rate</label>
@@ -507,6 +553,11 @@ function renderCard(opt,idx){
             <span class="spn-val">${opt.factorRate.toFixed(2)}</span>
             <button class="spn-btn" onclick="adjFr(${opt.id},0.01)">+</button>
           </div>
+          <input class="mob-slider" type="range" min="1.1" max="1.9" step="0.01"
+            data-slider="fr"
+            value="${Math.min(1.9,Math.max(1.1,opt.factorRate))}"
+            oninput="sliderInput(this)"
+            onchange="updFr(${opt.id},this.value)">
         </div>
         <div>
           <label class="flbl" style="margin-top:10px">Term</label>
@@ -522,6 +573,14 @@ function renderCard(opt,idx){
               <button class="spn-btn" onclick="adjTv(${opt.id},1)">+</button>
             </div>
           </div>
+          <input class="mob-slider" type="range"
+            min="1"
+            max="${opt.termType==='Days'?180:opt.termType==='Weeks'?52:18}"
+            step="1"
+            data-slider="tv"
+            value="${opt.termValue}"
+            oninput="sliderInput(this)"
+            onchange="updTv(${opt.id},this.value)">
         </div>
       </div>
     </div>
@@ -643,15 +702,87 @@ function renderAll(){
   const sorted=sortedOptions();
   document.getElementById('opts').innerHTML=sorted.map((o,i)=>renderCard(o,i)).join('');
   placeSummary();
+  // Initialize all slider track fills
+  document.querySelectorAll('.mob-slider').forEach(el=>{
+    const mn=parseFloat(el.min),mx=parseFloat(el.max),val=parseFloat(el.value);
+    const pct=((val-mn)/(mx-mn))*100;
+    el.style.background=`linear-gradient(to right,var(--blue) 0%,var(--blue) ${pct}%,#e2e8f0 ${pct}%,#e2e8f0 100%)`;
+  });
 }
 
 // ── Mutations ──
 function updAmt(id,v){getOpt(id).fundingAmount=Math.max(0,Number(v)||0);renderAll()}
 function adjAmt(id,d){getOpt(id).fundingAmount=Math.max(0,getOpt(id).fundingAmount+d);renderAll()}
 function adjFr(id,d){getOpt(id).factorRate=Math.max(1,Math.round((getOpt(id).factorRate+d)*100)/100);renderAll()}
+function updFr(id,v){getOpt(id).factorRate=Math.max(1,Math.round((parseFloat(v)||1)*100)/100);renderAll()}
+function updTv(id,v){getOpt(id).termValue=Math.max(1,parseInt(v)||1);renderAll()}
+
+// Slider live display update — no re-render during drag
+function sliderInput(el){
+  const mn=parseFloat(el.min),mx=parseFloat(el.max),val=parseFloat(el.value);
+  const pct=((val-mn)/(mx-mn))*100;
+  el.style.background=`linear-gradient(to right,var(--blue) 0%,var(--blue) ${pct}%,#e2e8f0 ${pct}%,#e2e8f0 100%)`;
+
+  // Find the option id from the card
+  const card=el.closest('.card');
+  if(!card) return;
+  const idMatch=card.id.match(/oc-(\d+)/);
+  if(!idMatch) return;
+  const id=parseInt(idMatch[1]);
+  const opt=getOpt(id);
+  if(!opt) return;
+
+  // Determine if this is fr, tv, or amt slider
+  const isFr=el.dataset.slider==='fr';
+  const isAmt=el.dataset.slider==='amt';
+  const newVal=isFr
+    ?Math.round(val*100)/100
+    :isAmt
+      ?Math.max(1000,Math.round(val/5000)*5000)
+      :Math.max(1,parseInt(val));
+
+  // Build a temp option with the new value for recalc
+  const tempOpt=isFr
+    ?{...opt,factorRate:newVal}
+    :isAmt
+      ?{...opt,fundingAmount:newVal}
+      :{...opt,termValue:newVal};
+  const c=calcOpt(tempOpt.fundingAmount,tempOpt.factorRate,tempOpt.termValue,tempOpt.termType);
+  const hl=tempOpt.termType==='Days'?'days':tempOpt.termType==='Weeks'?'weeks':'months';
+
+  // Update spinner/input display
+  const spns=card.querySelectorAll('.spn');
+  if(isFr && spns[0]) spns[0].querySelector('.spn-val').textContent=newVal.toFixed(2);
+  if(!isFr && !isAmt && spns[1]) spns[1].querySelector('.spn-val').textContent=newVal;
+  if(isAmt){
+    const amtIn=card.querySelector('.amt-in');
+    if(amtIn) amtIn.value=Number(newVal).toLocaleString();
+  }
+
+  // Update all overview cells
+  const cells=card.querySelectorAll('.c');
+  if(cells.length>=9){
+    // Row 1: Funding, Factor, Payback
+    cells[0].querySelector('.c-val').textContent='$'+Number(tempOpt.fundingAmount).toLocaleString();
+    cells[1].querySelector('.c-val').textContent=tempOpt.factorRate.toFixed(2);
+    cells[2].querySelector('.c-val').textContent='$'+Number(c.p).toLocaleString();
+    // Row 2: Days, Weeks, Months
+    cells[3].querySelector('.c-val').textContent=c.d;
+    cells[4].querySelector('.c-val').textContent=c.w;
+    cells[5].querySelector('.c-val').textContent=c.mo;
+    // Row 3: Daily, Weekly, Monthly
+    cells[6].querySelector('.c-val').textContent='$'+Number(c.daily).toLocaleString();
+    cells[7].querySelector('.c-val').textContent='$'+Number(c.weekly).toLocaleString();
+    cells[8].querySelector('.c-val').textContent='$'+Number(c.monthly).toLocaleString();
+    // Highlight active term column
+    [cells[3],cells[4],cells[5],cells[6],cells[7],cells[8]].forEach(c2=>c2.classList.remove('hl'));
+    const hlIdx=hl==='days'?0:hl==='weeks'?1:2;
+    cells[3+hlIdx].classList.add('hl');
+    cells[6+hlIdx].classList.add('hl');
+  }
+}
 function updTt(id,v){getOpt(id).termType=v;renderAll()}
 function adjTv(id,d){getOpt(id).termValue=Math.max(1,getOpt(id).termValue+d);renderAll()}
-let deletedStack=[]; // undo history
 
 function delOpt(id){
   const opt=options.find(o=>o.id===id);
