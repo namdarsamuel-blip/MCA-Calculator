@@ -32,6 +32,10 @@ body{
   padding-bottom:max(48px,env(safe-area-inset-bottom,48px));
 }
 
+@media(max-width:859px){
+  body{ padding-bottom:max(80px,env(safe-area-inset-bottom,80px)); }
+}
+
 /* ── HEADER ── */
 .hdr{
   padding:max(52px,env(safe-area-inset-top,52px)) 16px 16px;
@@ -540,11 +544,11 @@ function renderCard(opt,idx){
         <button class="btn-adj neg" onclick="adjAmt(${opt.id},-1000)">-1k</button>
         <button class="btn-adj neg" onclick="adjAmt(${opt.id},-10000)">-10k</button>
       </div>
-      <input class="mob-slider" type="range" min="1000" max="5000000" step="5000"
+      <input class="mob-slider" type="range" min="0" max="1000" step="1"
         data-slider="amt"
-        value="${Math.min(5000000,Math.max(1000,opt.fundingAmount))}"
+        value="${amtToSlider(Math.min(5000000,Math.max(1000,opt.fundingAmount)))}"
         oninput="sliderInput(this)"
-        onchange="updAmt(${opt.id},this.value)">
+        onchange="updAmt(${opt.id},sliderToAmt(this.value))">
       <div class="ft-row">
         <div>
           <label class="flbl" style="margin-top:10px">Factor Rate</label>
@@ -704,8 +708,10 @@ function renderAll(){
   placeSummary();
   // Initialize all slider track fills
   document.querySelectorAll('.mob-slider').forEach(el=>{
-    const mn=parseFloat(el.min),mx=parseFloat(el.max),val=parseFloat(el.value);
-    const pct=((val-mn)/(mx-mn))*100;
+    const isAmt=el.dataset.slider==='amt';
+    const mn=parseFloat(el.min),mx=parseFloat(el.max);
+    const rawVal=isAmt?amtToSlider(parseFloat(el.getAttribute('data-real-val')||el.value)):parseFloat(el.value);
+    const pct=((rawVal-mn)/(mx-mn))*100;
     el.style.background=`linear-gradient(to right,var(--blue) 0%,var(--blue) ${pct}%,#e2e8f0 ${pct}%,#e2e8f0 100%)`;
   });
 }
@@ -716,6 +722,24 @@ function adjAmt(id,d){getOpt(id).fundingAmount=Math.max(0,getOpt(id).fundingAmou
 function adjFr(id,d){getOpt(id).factorRate=Math.max(1,Math.round((getOpt(id).factorRate+d)*100)/100);renderAll()}
 function updFr(id,v){getOpt(id).factorRate=Math.max(1,Math.round((parseFloat(v)||1)*100)/100);renderAll()}
 function updTv(id,v){getOpt(id).termValue=Math.max(1,parseInt(v)||1);renderAll()}
+
+// Non-linear dollar scale: 0-1000 slider → $1k-$5M with more space at low end
+function sliderToAmt(s){
+  s=parseFloat(s);
+  if(s<=200) return Math.round((1000+(s/200)*99000)/1000)*1000;
+  if(s<=400) return Math.round((100000+((s-200)/200)*400000)/5000)*5000;
+  if(s<=600) return Math.round((500000+((s-400)/200)*500000)/10000)*10000;
+  if(s<=800) return Math.round((1000000+((s-600)/200)*1500000)/25000)*25000;
+  return Math.round((2500000+((s-800)/200)*2500000)/50000)*50000;
+}
+function amtToSlider(a){
+  a=parseFloat(a);
+  if(a<=100000)  return ((a-1000)/99000)*200;
+  if(a<=500000)  return 200+((a-100000)/400000)*200;
+  if(a<=1000000) return 400+((a-500000)/500000)*200;
+  if(a<=2500000) return 600+((a-1000000)/1500000)*200;
+  return 800+((a-2500000)/2500000)*200;
+}
 
 // Slider live display update — no re-render during drag
 function sliderInput(el){
@@ -738,7 +762,7 @@ function sliderInput(el){
   const newVal=isFr
     ?Math.round(val*100)/100
     :isAmt
-      ?Math.max(1000,Math.round(val/5000)*5000)
+      ?sliderToAmt(val)
       :Math.max(1,parseInt(val));
 
   // Build a temp option with the new value for recalc
