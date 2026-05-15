@@ -115,7 +115,7 @@ code{background:#dbeafe;color:var(--blue-dark);padding:1px 5px;border-radius:4px
 }
 .btn-del:active{background:#fee2e2;color:var(--red)}
 
-.inp-sec{padding:0 16px 14px}
+.inp-sec{padding:0 16px 14px;max-width:640px}
 .flbl{font-size:13px;color:var(--sub);display:block;margin-bottom:6px}
 .amt-box{
   display:flex;align-items:center;gap:4px;
@@ -125,14 +125,14 @@ code{background:#dbeafe;color:var(--blue-dark);padding:1px 5px;border-radius:4px
 .amt-pfx{font-size:18px;color:var(--sub)}
 .amt-in{border:none;outline:none;background:transparent;font-size:20px;width:100%;font-family:inherit;color:var(--text)}
 
-.adj-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:6px}
+.adj-row{display:none}
 .btn-adj{padding:11px 0;border-radius:10px;border:none;font-size:14px;cursor:pointer;font-family:inherit}
 .btn-adj.pos{background:#dcfce7;color:var(--green)}
 .btn-adj.pos:active{background:#bbf7d0}
 .btn-adj.neg{background:#fee2e2;color:var(--red)}
 .btn-adj.neg:active{background:#fecaca}
 
-.ft-row{display:grid;grid-template-columns:1fr 1.6fr;gap:10px;margin-top:12px}
+.ft-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
 .spn{
   display:flex;align-items:center;
   background:var(--inp);border:1.5px solid var(--border);
@@ -191,14 +191,6 @@ code{background:#dbeafe;color:var(--blue-dark);padding:1px 5px;border-radius:4px
     box-shadow:0 1px 4px rgba(0,0,0,0.2);
     cursor:pointer;
   }
-  .ft-row{grid-template-columns:1fr;gap:12px}
-  .trm-row{gap:8px}
-  .trm-sel{height:54px;font-size:17px;padding:0 12px;border-radius:12px;flex:0 0 110px}
-  .spn{height:54px;border-radius:12px}
-  .spn-btn{width:54px;height:54px;font-size:26px;background:var(--inp)}
-  .spn-btn:active{background:#dde3ec}
-  .spn-val{font-size:20px;font-weight:500}
-  .ft-row .spn:first-of-type .spn-btn{width:54px;height:54px;font-size:26px}
 }
 
 .divider{height:1px;background:var(--border)}
@@ -548,36 +540,30 @@ function renderCard(opt,idx){
       ${del}
     </div>
     <div class="inp-sec">
-      <label class="flbl">Funding Amount</label>
-      <div class="amt-box">
-        <span class="amt-pfx">$</span>
-        <input class="amt-in" type="text" id="ai-${opt.id}"
-          value="${Number(opt.fundingAmount).toLocaleString()}"
-          oninput="fmtAmtInput(this)"
-          onblur="updAmt(${opt.id},this.value.replace(/,/g,''))">
-      </div>
-      <div class="adj-row">
-        <button class="btn-adj pos" onclick="adjAmt(${opt.id},100)">+100</button>
-        <button class="btn-adj pos" onclick="adjAmt(${opt.id},1000)">+1k</button>
-        <button class="btn-adj pos" onclick="adjAmt(${opt.id},10000)">+10k</button>
-      </div>
-      <div class="adj-row" style="margin-bottom:0">
-        <button class="btn-adj neg" onclick="adjAmt(${opt.id},-100)">-100</button>
-        <button class="btn-adj neg" onclick="adjAmt(${opt.id},-1000)">-1k</button>
-        <button class="btn-adj neg" onclick="adjAmt(${opt.id},-10000)">-10k</button>
-      </div>
-      <input class="mob-slider" type="range" min="0" max="1000" step="1"
-        data-slider="amt"
-        value="${amtToSlider(Math.min(5000000,Math.max(1000,opt.fundingAmount)))}"
-        oninput="sliderInput(this)"
-        onchange="updAmt(${opt.id},sliderToAmt(this.value))">
-      <div class="ft-row">
+      <div class="ft-row" style="margin-top:12px">
         <div>
-          <label class="flbl" style="margin-top:10px">Factor Rate</label>
+          <label class="flbl">Funding Amount</label>
+          <div class="amt-box">
+            <span class="amt-pfx">$</span>
+            <input class="amt-in" type="text" id="ai-${opt.id}"
+              value="${Number(opt.fundingAmount).toLocaleString()}"
+              oninput="fmtAmtInput(this)"
+              onfocus="this.select()"
+              onblur="updAmt(${opt.id},this.value.replace(/,/g,''))">
+          </div>
+          <input class="mob-slider" type="range" min="0" max="1000" step="1"
+            data-slider="amt"
+            value="${amtToSlider(Math.min(5000000,Math.max(1000,opt.fundingAmount)))}"
+            oninput="sliderInput(this)"
+            onchange="updAmt(${opt.id},sliderToAmt(this.value))">
+        </div>
+        <div>
+          <label class="flbl">Factor Rate</label>
           <div class="spn">
             <button class="spn-btn" onclick="adjFr(${opt.id},-0.01)">−</button>
             <input class="spn-in" type="number" step="0.01" min="1" max="2"
               value="${opt.factorRate.toFixed(2)}"
+              onfocus="this.select()"
               onchange="updFr(${opt.id},this.value)"
               onkeydown="if(event.key==='Enter')this.blur()">
             <button class="spn-btn" onclick="adjFr(${opt.id},0.01)">+</button>
@@ -588,8 +574,10 @@ function renderCard(opt,idx){
             oninput="sliderInput(this)"
             onchange="updFr(${opt.id},this.value)">
         </div>
-        <div>
-          <label class="flbl" style="margin-top:10px">Term</label>
+      </div>
+      <div class="ft-row" style="margin-top:12px">
+        <div style="grid-column:1/-1">
+          <label class="flbl">Term</label>
           <div class="trm-row">
             <select class="trm-sel" onchange="updTt(${opt.id},this.value)">
               <option ${opt.termType==='Days'?'selected':''}>Days</option>
@@ -600,6 +588,7 @@ function renderCard(opt,idx){
               <button class="spn-btn" onclick="adjTv(${opt.id},-1)">−</button>
               <input class="spn-in" type="number" min="1"
                 value="${opt.termValue}"
+                onfocus="this.select()"
                 onchange="updTv(${opt.id},this.value)"
                 onkeydown="if(event.key==='Enter')this.blur()">
               <button class="spn-btn" onclick="adjTv(${opt.id},1)">+</button>
